@@ -1,0 +1,32 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: OrgManager
+    network: sepolia
+    source:
+      address: "0xa15cD7dCc36AF9213ff70c3Af2d3236C7f6F1B42"
+      abi: OrgManager
+      startBlock: 5343343
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - MemberAddedToOrganization
+        - MemberCreated
+        - OrganizationCreated
+      abis:
+        - name: OrgManager
+          file: ./abis/OrgManager.json
+      eventHandlers:
+        - event: MemberAddedToOrganization(bytes32,bytes32)
+          handler: handleMemberAddedToOrganization
+        - event: MemberCreated(bytes32,string)
+          handler: handleMemberCreated
+        - event: OrganizationCreated(bytes32,string)
+          handler: handleOrganizationCreated
+      file: ./src/org-manager.ts

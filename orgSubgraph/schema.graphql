@@ -1,0 +1,26 @@
+type MemberAddedToOrganization @entity(immutable: true) {
+  id: Bytes!
+  orgId: Bytes! # bytes32
+  memberId: Bytes! # bytes32
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type MemberCreated @entity(immutable: true) {
+  id: Bytes!
+  memberId: Bytes! # bytes32
+  name: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OrganizationCreated @entity(immutable: true) {
+  id: Bytes!
+  orgId: Bytes! # bytes32
+  name: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}

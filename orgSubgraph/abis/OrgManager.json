@@ -1,0 +1,130 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "orgId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "memberId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "MemberAddedToOrganization",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "memberId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "name": "MemberCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "orgId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "name": "OrganizationCreated",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "_orgId", "type": "bytes32" },
+      { "internalType": "bytes32", "name": "_memberId", "type": "bytes32" }
+    ],
+    "name": "addMemberToOrganization",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "_id", "type": "bytes32" },
+      { "internalType": "string", "name": "_name", "type": "string" }
+    ],
+    "name": "createMember",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "_id", "type": "bytes32" },
+      { "internalType": "string", "name": "_name", "type": "string" }
+    ],
+    "name": "createOrg",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "bytes32", "name": "_id", "type": "bytes32" }],
+    "name": "getMember",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "bytes32", "name": "id", "type": "bytes32" },
+          { "internalType": "string", "name": "name", "type": "string" },
+          { "internalType": "address", "name": "memberAddr", "type": "address" }
+        ],
+        "internalType": "struct MemberStruct",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "bytes32", "name": "_id", "type": "bytes32" }],
+    "name": "getOrg",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "bytes32", "name": "id", "type": "bytes32" },
+          { "internalType": "string", "name": "name", "type": "string" },
+          { "internalType": "address", "name": "owner", "type": "address" },
+          {
+            "internalType": "bytes32[]",
+            "name": "members",
+            "type": "bytes32[]"
+          }
+        ],
+        "internalType": "struct Org",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
