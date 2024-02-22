@@ -1,4 +1,6 @@
 specVersion: 1.0.0
+description: Playing around with subgraph
+repository: https://github.com/clauBv23
 indexerHints:
   prune: auto
 schema:
