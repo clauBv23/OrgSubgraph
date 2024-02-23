@@ -4,7 +4,7 @@ repository: https://github.com/clauBv23
 indexerHints:
   prune: auto
 schema:
-  file: ./schema.graphql
+  file: schema.graphql
 dataSources:
   - kind: ethereum
     name: OrgManager
@@ -23,7 +23,7 @@ dataSources:
         - OrganizationCreated
       abis:
         - name: OrgManager
-          file: ./abis/OrgManager.json
+          file: OrgManager/abis/OrgManager.json
       eventHandlers:
         - event: MemberJoinedOrganization(bytes32,bytes32)
           handler: handleMemberJoinedOrganization
@@ -35,4 +35,4 @@ dataSources:
           handler: handleMemberCreated
         - event: OrganizationCreated(bytes32,string,address)
           handler: handleOrganizationCreated
-      file: ./src/org-manager.ts
+      file: OrgManager/OrgManager.wasm
