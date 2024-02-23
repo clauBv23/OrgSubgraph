@@ -1,26 +1,28 @@
-type MemberAddedToOrganization @entity(immutable: true) {
-  id: Bytes!
-  orgId: Bytes! # bytes32
-  memberId: Bytes! # bytes32
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type Member @entity(immutable: false) {
+  id: ID! # bytes32
+  name: String! # string
+  memberAddr: Bytes! # address
+  organization: [MemberOrganization!]! @derivedFrom(field: "member")  
+  votingPower: VotingPower!
 }
 
-type MemberCreated @entity(immutable: true) {
-  id: Bytes!
-  memberId: Bytes! # bytes32
+type Organization @entity(immutable: false) {
+  id: ID! # bytes32
+  owner: Bytes! # address
   name: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  member: [MemberOrganization!]! @derivedFrom(field: "organization")
 }
 
-type OrganizationCreated @entity(immutable: true) {
-  id: Bytes!
-  orgId: Bytes! # bytes32
-  name: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+# many to many relationship
+type MemberOrganization @entity(immutable: true){
+  id: ID! # Set to `[memberId, organizationId].join('-')`
+  member: Member!
+  organization: Organization!
+}
+
+type VotingPower @entity(immutable: false) {
+  id: ID! # Set to `[memberId, organizationId].join('-')`
+  value: BigInt! # uint256
+  member: Member!
+  organization: Organization!
 }
