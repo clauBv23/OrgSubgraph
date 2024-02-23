@@ -25,10 +25,14 @@ dataSources:
         - name: OrgManager
           file: ./abis/OrgManager.json
       eventHandlers:
-        - event: MemberAddedToOrganization(bytes32,bytes32)
-          handler: handleMemberAddedToOrganization
-        - event: MemberCreated(bytes32,string)
+        - event: MemberJoinedOrganization(bytes32,bytes32)
+          handler: handleMemberJoinedOrganization
+        - event: MemberLeavedOrganization(bytes32,bytes32)
+          handler: handleMemberLeavedOrganization
+        - event: VotingPowerSetToMember(bytes32,bytes32,uint256)
+          handler: handleVotingPowerSetToMember
+        - event: MemberCreated(bytes32,string,address)
           handler: handleMemberCreated
-        - event: OrganizationCreated(bytes32,string)
+        - event: OrganizationCreated(bytes32,string,address)
           handler: handleOrganizationCreated
       file: ./src/org-manager.ts
