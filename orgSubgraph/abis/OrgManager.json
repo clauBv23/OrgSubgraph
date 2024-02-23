@@ -1,130 +1,377 @@
 [
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "orgId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "memberId",
-        "type": "bytes32"
-      }
-    ],
-    "name": "MemberAddedToOrganization",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "memberId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      }
-    ],
-    "name": "MemberCreated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "bytes32",
-        "name": "orgId",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      }
-    ],
-    "name": "OrganizationCreated",
-    "type": "event"
-  },
-  {
-    "inputs": [
-      { "internalType": "bytes32", "name": "_orgId", "type": "bytes32" },
-      { "internalType": "bytes32", "name": "_memberId", "type": "bytes32" }
-    ],
-    "name": "addMemberToOrganization",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "bytes32", "name": "_id", "type": "bytes32" },
-      { "internalType": "string", "name": "_name", "type": "string" }
-    ],
+    "type": "function",
     "name": "createMember",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
-      { "internalType": "bytes32", "name": "_id", "type": "bytes32" },
-      { "internalType": "string", "name": "_name", "type": "string" }
+      {
+        "name": "_id",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "_name",
+        "type": "string",
+        "internalType": "string"
+      }
     ],
-    "name": "createOrg",
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [{ "internalType": "bytes32", "name": "_id", "type": "bytes32" }],
-    "name": "getMember",
-    "outputs": [
+    "type": "function",
+    "name": "createOrg",
+    "inputs": [
       {
-        "components": [
-          { "internalType": "bytes32", "name": "id", "type": "bytes32" },
-          { "internalType": "string", "name": "name", "type": "string" },
-          { "internalType": "address", "name": "memberAddr", "type": "address" }
-        ],
-        "internalType": "struct MemberStruct",
-        "name": "",
-        "type": "tuple"
+        "name": "_id",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "_name",
+        "type": "string",
+        "internalType": "string"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [{ "internalType": "bytes32", "name": "_id", "type": "bytes32" }],
-    "name": "getOrg",
-    "outputs": [
+    "type": "function",
+    "name": "isMemberAdmin",
+    "inputs": [
       {
-        "components": [
-          { "internalType": "bytes32", "name": "id", "type": "bytes32" },
-          { "internalType": "string", "name": "name", "type": "string" },
-          { "internalType": "address", "name": "owner", "type": "address" },
-          {
-            "internalType": "bytes32[]",
-            "name": "members",
-            "type": "bytes32[]"
-          }
-        ],
-        "internalType": "struct Org",
-        "name": "",
-        "type": "tuple"
+        "name": "_id",
+        "type": "bytes32",
+        "internalType": "bytes32"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "isOrganizationOwner",
+    "inputs": [
+      {
+        "name": "_id",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "joinOrganization",
+    "inputs": [
+      {
+        "name": "_orgId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "_memberId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "leaveOrganization",
+    "inputs": [
+      {
+        "name": "_orgId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "_memberId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "memberExists",
+    "inputs": [
+      {
+        "name": "_id",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "members",
+    "inputs": [
+      {
+        "name": "memberId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "adminAddr",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "organizationExists",
+    "inputs": [
+      {
+        "name": "_id",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "organizations",
+    "inputs": [
+      {
+        "name": "orgId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "id",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "owner",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "setVotingPowerToMember",
+    "inputs": [
+      {
+        "name": "_orgId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "_memberId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "_votingPower",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "MemberCreated",
+    "inputs": [
+      {
+        "name": "memberId",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "adminAddr",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "MemberJoinedOrganization",
+    "inputs": [
+      {
+        "name": "orgId",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "memberId",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "MemberLeavedOrganization",
+    "inputs": [
+      {
+        "name": "orgId",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "memberId",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "OrganizationCreated",
+    "inputs": [
+      {
+        "name": "orgId",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      },
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "VotingPowerSetToMember",
+    "inputs": [
+      {
+        "name": "orgId",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "memberId",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "votingPower",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "error",
+    "name": "NonExistentMember",
+    "inputs": [
+      {
+        "name": "memberId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "NonExistentOrganization",
+    "inputs": [
+      {
+        "name": "orgId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "PermissionDenied",
+    "inputs": [
+      {
+        "name": "caller",
+        "type": "address",
+        "internalType": "address"
+      }
+    ]
   }
 ]
