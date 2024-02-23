@@ -8,7 +8,7 @@ contract OrganizationCtr {
 
     event OrganizationCreated(bytes32 orgId, string name, address owner);
 
-    function createOrg(bytes32 _id, string memory _name) external {
+    function createOrganization(bytes32 _id, string calldata _name) external {
         organizations[_id] = Organization(_id, _name, msg.sender);
         emit OrganizationCreated(_id, _name, msg.sender);
     }

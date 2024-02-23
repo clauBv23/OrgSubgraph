@@ -8,7 +8,7 @@ contract MemberCtr {
 
     event MemberCreated(bytes32 memberId, string name, address adminAddr);
 
-    function createMember(bytes32 _id, string memory _name) external {
+    function createMember(bytes32 _id, string calldata _name) external {
         members[_id] = Member(_id, _name, msg.sender);
         emit MemberCreated(_id, _name, msg.sender);
     }

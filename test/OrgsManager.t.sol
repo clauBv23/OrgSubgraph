@@ -23,7 +23,7 @@ contract OrgsManagerTest is Test {
 
     function test_addOrganization() public {
         uint256 orgId = 1010;
-        manager.createOrg(bytes32(orgId), "Test Org");
+        manager.createOrganization(bytes32(orgId), "Test Org");
 
         Organization memory org;
         (org.id, org.name, org.owner) = manager.organizations(bytes32(orgId));
@@ -44,7 +44,7 @@ contract OrgsManagerTest is Test {
     function test_joinOrganization() public {
         // alice owner of the org
         vm.startPrank(alice);
-        manager.createOrg(bytes32(aliceOrgId), "Alice's Org");
+        manager.createOrganization(bytes32(aliceOrgId), "Alice's Org");
         vm.stopPrank();
 
         // add bob and join alice's org
@@ -59,7 +59,7 @@ contract OrgsManagerTest is Test {
     function test_setVotingPowerToMember() public {
         // alice owner of the org
         vm.startPrank(alice);
-        manager.createOrg(bytes32(aliceOrgId), "Alice's Org");
+        manager.createOrganization(bytes32(aliceOrgId), "Alice's Org");
         vm.stopPrank();
 
         // add bob and join alice's org
@@ -90,7 +90,7 @@ contract OrgsManagerTest is Test {
     function test_leaveOrganization() public {
         // alice owner of the org
         vm.startPrank(alice);
-        manager.createOrg(bytes32(aliceOrgId), "Alice's Org");
+        manager.createOrganization(bytes32(aliceOrgId), "Alice's Org");
         vm.stopPrank();
 
         // add bob
