@@ -10,28 +10,6 @@ import {
   BigInt,
 } from "@graphprotocol/graph-ts";
 
-export class MemberAddedToOrganization extends ethereum.Event {
-  get params(): MemberAddedToOrganization__Params {
-    return new MemberAddedToOrganization__Params(this);
-  }
-}
-
-export class MemberAddedToOrganization__Params {
-  _event: MemberAddedToOrganization;
-
-  constructor(event: MemberAddedToOrganization) {
-    this._event = event;
-  }
-
-  get orgId(): Bytes {
-    return this._event.parameters[0].value.toBytes();
-  }
-
-  get memberId(): Bytes {
-    return this._event.parameters[1].value.toBytes();
-  }
-}
-
 export class MemberCreated extends ethereum.Event {
   get params(): MemberCreated__Params {
     return new MemberCreated__Params(this);
@@ -51,6 +29,54 @@ export class MemberCreated__Params {
 
   get name(): string {
     return this._event.parameters[1].value.toString();
+  }
+
+  get adminAddr(): Address {
+    return this._event.parameters[2].value.toAddress();
+  }
+}
+
+export class MemberJoinedOrganization extends ethereum.Event {
+  get params(): MemberJoinedOrganization__Params {
+    return new MemberJoinedOrganization__Params(this);
+  }
+}
+
+export class MemberJoinedOrganization__Params {
+  _event: MemberJoinedOrganization;
+
+  constructor(event: MemberJoinedOrganization) {
+    this._event = event;
+  }
+
+  get orgId(): Bytes {
+    return this._event.parameters[0].value.toBytes();
+  }
+
+  get memberId(): Bytes {
+    return this._event.parameters[1].value.toBytes();
+  }
+}
+
+export class MemberLeavedOrganization extends ethereum.Event {
+  get params(): MemberLeavedOrganization__Params {
+    return new MemberLeavedOrganization__Params(this);
+  }
+}
+
+export class MemberLeavedOrganization__Params {
+  _event: MemberLeavedOrganization;
+
+  constructor(event: MemberLeavedOrganization) {
+    this._event = event;
+  }
+
+  get orgId(): Bytes {
+    return this._event.parameters[0].value.toBytes();
+  }
+
+  get memberId(): Bytes {
+    return this._event.parameters[1].value.toBytes();
   }
 }
 
@@ -74,37 +100,99 @@ export class OrganizationCreated__Params {
   get name(): string {
     return this._event.parameters[1].value.toString();
   }
-}
-
-export class OrgManager__getMemberResultValue0Struct extends ethereum.Tuple {
-  get id(): Bytes {
-    return this[0].toBytes();
-  }
-
-  get name(): string {
-    return this[1].toString();
-  }
-
-  get memberAddr(): Address {
-    return this[2].toAddress();
-  }
-}
-
-export class OrgManager__getOrgResultValue0Struct extends ethereum.Tuple {
-  get id(): Bytes {
-    return this[0].toBytes();
-  }
-
-  get name(): string {
-    return this[1].toString();
-  }
 
   get owner(): Address {
-    return this[2].toAddress();
+    return this._event.parameters[2].value.toAddress();
+  }
+}
+
+export class VotingPowerSetToMember extends ethereum.Event {
+  get params(): VotingPowerSetToMember__Params {
+    return new VotingPowerSetToMember__Params(this);
+  }
+}
+
+export class VotingPowerSetToMember__Params {
+  _event: VotingPowerSetToMember;
+
+  constructor(event: VotingPowerSetToMember) {
+    this._event = event;
   }
 
-  get members(): Array<Bytes> {
-    return this[3].toBytesArray();
+  get orgId(): Bytes {
+    return this._event.parameters[0].value.toBytes();
+  }
+
+  get memberId(): Bytes {
+    return this._event.parameters[1].value.toBytes();
+  }
+
+  get votingPower(): BigInt {
+    return this._event.parameters[2].value.toBigInt();
+  }
+}
+
+export class OrgManager__membersResult {
+  value0: Bytes;
+  value1: string;
+  value2: Address;
+
+  constructor(value0: Bytes, value1: string, value2: Address) {
+    this.value0 = value0;
+    this.value1 = value1;
+    this.value2 = value2;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromFixedBytes(this.value0));
+    map.set("value1", ethereum.Value.fromString(this.value1));
+    map.set("value2", ethereum.Value.fromAddress(this.value2));
+    return map;
+  }
+
+  getId(): Bytes {
+    return this.value0;
+  }
+
+  getName(): string {
+    return this.value1;
+  }
+
+  getAdminAddr(): Address {
+    return this.value2;
+  }
+}
+
+export class OrgManager__organizationsResult {
+  value0: Bytes;
+  value1: string;
+  value2: Address;
+
+  constructor(value0: Bytes, value1: string, value2: Address) {
+    this.value0 = value0;
+    this.value1 = value1;
+    this.value2 = value2;
+  }
+
+  toMap(): TypedMap<string, ethereum.Value> {
+    let map = new TypedMap<string, ethereum.Value>();
+    map.set("value0", ethereum.Value.fromFixedBytes(this.value0));
+    map.set("value1", ethereum.Value.fromString(this.value1));
+    map.set("value2", ethereum.Value.fromAddress(this.value2));
+    return map;
+  }
+
+  getId(): Bytes {
+    return this.value0;
+  }
+
+  getName(): string {
+    return this.value1;
+  }
+
+  getOwner(): Address {
+    return this.value2;
   }
 }
 
@@ -113,96 +201,158 @@ export class OrgManager extends ethereum.SmartContract {
     return new OrgManager("OrgManager", address);
   }
 
-  getMember(_id: Bytes): OrgManager__getMemberResultValue0Struct {
-    let result = super.call(
-      "getMember",
-      "getMember(bytes32):((bytes32,string,address))",
-      [ethereum.Value.fromFixedBytes(_id)],
-    );
+  isMemberAdmin(_id: Bytes): boolean {
+    let result = super.call("isMemberAdmin", "isMemberAdmin(bytes32):(bool)", [
+      ethereum.Value.fromFixedBytes(_id),
+    ]);
 
-    return changetype<OrgManager__getMemberResultValue0Struct>(
-      result[0].toTuple(),
-    );
+    return result[0].toBoolean();
   }
 
-  try_getMember(
-    _id: Bytes,
-  ): ethereum.CallResult<OrgManager__getMemberResultValue0Struct> {
+  try_isMemberAdmin(_id: Bytes): ethereum.CallResult<boolean> {
     let result = super.tryCall(
-      "getMember",
-      "getMember(bytes32):((bytes32,string,address))",
+      "isMemberAdmin",
+      "isMemberAdmin(bytes32):(bool)",
       [ethereum.Value.fromFixedBytes(_id)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(
-      changetype<OrgManager__getMemberResultValue0Struct>(value[0].toTuple()),
-    );
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
-  getOrg(_id: Bytes): OrgManager__getOrgResultValue0Struct {
+  isOrganizationOwner(_id: Bytes): boolean {
     let result = super.call(
-      "getOrg",
-      "getOrg(bytes32):((bytes32,string,address,bytes32[]))",
+      "isOrganizationOwner",
+      "isOrganizationOwner(bytes32):(bool)",
       [ethereum.Value.fromFixedBytes(_id)],
     );
 
-    return changetype<OrgManager__getOrgResultValue0Struct>(
-      result[0].toTuple(),
-    );
+    return result[0].toBoolean();
   }
 
-  try_getOrg(
-    _id: Bytes,
-  ): ethereum.CallResult<OrgManager__getOrgResultValue0Struct> {
+  try_isOrganizationOwner(_id: Bytes): ethereum.CallResult<boolean> {
     let result = super.tryCall(
-      "getOrg",
-      "getOrg(bytes32):((bytes32,string,address,bytes32[]))",
+      "isOrganizationOwner",
+      "isOrganizationOwner(bytes32):(bool)",
       [ethereum.Value.fromFixedBytes(_id)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-    return ethereum.CallResult.fromValue(
-      changetype<OrgManager__getOrgResultValue0Struct>(value[0].toTuple()),
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
+  memberExists(_id: Bytes): boolean {
+    let result = super.call("memberExists", "memberExists(bytes32):(bool)", [
+      ethereum.Value.fromFixedBytes(_id),
+    ]);
+
+    return result[0].toBoolean();
+  }
+
+  try_memberExists(_id: Bytes): ethereum.CallResult<boolean> {
+    let result = super.tryCall("memberExists", "memberExists(bytes32):(bool)", [
+      ethereum.Value.fromFixedBytes(_id),
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
+  }
+
+  members(memberId: Bytes): OrgManager__membersResult {
+    let result = super.call(
+      "members",
+      "members(bytes32):(bytes32,string,address)",
+      [ethereum.Value.fromFixedBytes(memberId)],
+    );
+
+    return new OrgManager__membersResult(
+      result[0].toBytes(),
+      result[1].toString(),
+      result[2].toAddress(),
     );
   }
-}
 
-export class AddMemberToOrganizationCall extends ethereum.Call {
-  get inputs(): AddMemberToOrganizationCall__Inputs {
-    return new AddMemberToOrganizationCall__Inputs(this);
+  try_members(memberId: Bytes): ethereum.CallResult<OrgManager__membersResult> {
+    let result = super.tryCall(
+      "members",
+      "members(bytes32):(bytes32,string,address)",
+      [ethereum.Value.fromFixedBytes(memberId)],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new OrgManager__membersResult(
+        value[0].toBytes(),
+        value[1].toString(),
+        value[2].toAddress(),
+      ),
+    );
   }
 
-  get outputs(): AddMemberToOrganizationCall__Outputs {
-    return new AddMemberToOrganizationCall__Outputs(this);
-  }
-}
+  organizationExists(_id: Bytes): boolean {
+    let result = super.call(
+      "organizationExists",
+      "organizationExists(bytes32):(bool)",
+      [ethereum.Value.fromFixedBytes(_id)],
+    );
 
-export class AddMemberToOrganizationCall__Inputs {
-  _call: AddMemberToOrganizationCall;
-
-  constructor(call: AddMemberToOrganizationCall) {
-    this._call = call;
+    return result[0].toBoolean();
   }
 
-  get _orgId(): Bytes {
-    return this._call.inputValues[0].value.toBytes();
+  try_organizationExists(_id: Bytes): ethereum.CallResult<boolean> {
+    let result = super.tryCall(
+      "organizationExists",
+      "organizationExists(bytes32):(bool)",
+      [ethereum.Value.fromFixedBytes(_id)],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
-  get _memberId(): Bytes {
-    return this._call.inputValues[1].value.toBytes();
+  organizations(orgId: Bytes): OrgManager__organizationsResult {
+    let result = super.call(
+      "organizations",
+      "organizations(bytes32):(bytes32,string,address)",
+      [ethereum.Value.fromFixedBytes(orgId)],
+    );
+
+    return new OrgManager__organizationsResult(
+      result[0].toBytes(),
+      result[1].toString(),
+      result[2].toAddress(),
+    );
   }
-}
 
-export class AddMemberToOrganizationCall__Outputs {
-  _call: AddMemberToOrganizationCall;
-
-  constructor(call: AddMemberToOrganizationCall) {
-    this._call = call;
+  try_organizations(
+    orgId: Bytes,
+  ): ethereum.CallResult<OrgManager__organizationsResult> {
+    let result = super.tryCall(
+      "organizations",
+      "organizations(bytes32):(bytes32,string,address)",
+      [ethereum.Value.fromFixedBytes(orgId)],
+    );
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(
+      new OrgManager__organizationsResult(
+        value[0].toBytes(),
+        value[1].toString(),
+        value[2].toAddress(),
+      ),
+    );
   }
 }
 
@@ -270,6 +420,112 @@ export class CreateOrgCall__Outputs {
   _call: CreateOrgCall;
 
   constructor(call: CreateOrgCall) {
+    this._call = call;
+  }
+}
+
+export class JoinOrganizationCall extends ethereum.Call {
+  get inputs(): JoinOrganizationCall__Inputs {
+    return new JoinOrganizationCall__Inputs(this);
+  }
+
+  get outputs(): JoinOrganizationCall__Outputs {
+    return new JoinOrganizationCall__Outputs(this);
+  }
+}
+
+export class JoinOrganizationCall__Inputs {
+  _call: JoinOrganizationCall;
+
+  constructor(call: JoinOrganizationCall) {
+    this._call = call;
+  }
+
+  get _orgId(): Bytes {
+    return this._call.inputValues[0].value.toBytes();
+  }
+
+  get _memberId(): Bytes {
+    return this._call.inputValues[1].value.toBytes();
+  }
+}
+
+export class JoinOrganizationCall__Outputs {
+  _call: JoinOrganizationCall;
+
+  constructor(call: JoinOrganizationCall) {
+    this._call = call;
+  }
+}
+
+export class LeaveOrganizationCall extends ethereum.Call {
+  get inputs(): LeaveOrganizationCall__Inputs {
+    return new LeaveOrganizationCall__Inputs(this);
+  }
+
+  get outputs(): LeaveOrganizationCall__Outputs {
+    return new LeaveOrganizationCall__Outputs(this);
+  }
+}
+
+export class LeaveOrganizationCall__Inputs {
+  _call: LeaveOrganizationCall;
+
+  constructor(call: LeaveOrganizationCall) {
+    this._call = call;
+  }
+
+  get _orgId(): Bytes {
+    return this._call.inputValues[0].value.toBytes();
+  }
+
+  get _memberId(): Bytes {
+    return this._call.inputValues[1].value.toBytes();
+  }
+}
+
+export class LeaveOrganizationCall__Outputs {
+  _call: LeaveOrganizationCall;
+
+  constructor(call: LeaveOrganizationCall) {
+    this._call = call;
+  }
+}
+
+export class SetVotingPowerToMemberCall extends ethereum.Call {
+  get inputs(): SetVotingPowerToMemberCall__Inputs {
+    return new SetVotingPowerToMemberCall__Inputs(this);
+  }
+
+  get outputs(): SetVotingPowerToMemberCall__Outputs {
+    return new SetVotingPowerToMemberCall__Outputs(this);
+  }
+}
+
+export class SetVotingPowerToMemberCall__Inputs {
+  _call: SetVotingPowerToMemberCall;
+
+  constructor(call: SetVotingPowerToMemberCall) {
+    this._call = call;
+  }
+
+  get _orgId(): Bytes {
+    return this._call.inputValues[0].value.toBytes();
+  }
+
+  get _memberId(): Bytes {
+    return this._call.inputValues[1].value.toBytes();
+  }
+
+  get _votingPower(): BigInt {
+    return this._call.inputValues[2].value.toBigInt();
+  }
+}
+
+export class SetVotingPowerToMemberCall__Outputs {
+  _call: SetVotingPowerToMemberCall;
+
+  constructor(call: SetVotingPowerToMemberCall) {
     this._call = call;
   }
 }

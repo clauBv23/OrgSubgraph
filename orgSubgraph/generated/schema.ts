@@ -11,172 +11,43 @@ import {
   BigDecimal,
 } from "@graphprotocol/graph-ts";
 
-export class MemberAddedToOrganization extends Entity {
-  constructor(id: Bytes) {
+export class Member extends Entity {
+  constructor(id: string) {
     super();
-    this.set("id", Value.fromBytes(id));
+    this.set("id", Value.fromString(id));
   }
 
   save(): void {
     let id = this.get("id");
-    assert(
-      id != null,
-      "Cannot save MemberAddedToOrganization entity without an ID",
-    );
+    assert(id != null, "Cannot save Member entity without an ID");
     if (id) {
       assert(
-        id.kind == ValueKind.BYTES,
-        `Entities of type MemberAddedToOrganization must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+        id.kind == ValueKind.STRING,
+        `Entities of type Member must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
-      store.set("MemberAddedToOrganization", id.toBytes().toHexString(), this);
+      store.set("Member", id.toString(), this);
     }
   }
 
-  static loadInBlock(id: Bytes): MemberAddedToOrganization | null {
-    return changetype<MemberAddedToOrganization | null>(
-      store.get_in_block("MemberAddedToOrganization", id.toHexString()),
-    );
+  static loadInBlock(id: string): Member | null {
+    return changetype<Member | null>(store.get_in_block("Member", id));
   }
 
-  static load(id: Bytes): MemberAddedToOrganization | null {
-    return changetype<MemberAddedToOrganization | null>(
-      store.get("MemberAddedToOrganization", id.toHexString()),
-    );
+  static load(id: string): Member | null {
+    return changetype<Member | null>(store.get("Member", id));
   }
 
-  get id(): Bytes {
+  get id(): string {
     let value = this.get("id");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set id(value: Bytes) {
-    this.set("id", Value.fromBytes(value));
-  }
-
-  get orgId(): Bytes {
-    let value = this.get("orgId");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBytes();
-    }
-  }
-
-  set orgId(value: Bytes) {
-    this.set("orgId", Value.fromBytes(value));
-  }
-
-  get memberId(): Bytes {
-    let value = this.get("memberId");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBytes();
-    }
-  }
-
-  set memberId(value: Bytes) {
-    this.set("memberId", Value.fromBytes(value));
-  }
-
-  get blockNumber(): BigInt {
-    let value = this.get("blockNumber");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
-  }
-
-  get blockTimestamp(): BigInt {
-    let value = this.get("blockTimestamp");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set blockTimestamp(value: BigInt) {
-    this.set("blockTimestamp", Value.fromBigInt(value));
-  }
-
-  get transactionHash(): Bytes {
-    let value = this.get("transactionHash");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBytes();
-    }
-  }
-
-  set transactionHash(value: Bytes) {
-    this.set("transactionHash", Value.fromBytes(value));
-  }
-}
-
-export class MemberCreated extends Entity {
-  constructor(id: Bytes) {
-    super();
-    this.set("id", Value.fromBytes(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save MemberCreated entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.BYTES,
-        `Entities of type MemberCreated must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
-      );
-      store.set("MemberCreated", id.toBytes().toHexString(), this);
-    }
-  }
-
-  static loadInBlock(id: Bytes): MemberCreated | null {
-    return changetype<MemberCreated | null>(
-      store.get_in_block("MemberCreated", id.toHexString()),
-    );
-  }
-
-  static load(id: Bytes): MemberCreated | null {
-    return changetype<MemberCreated | null>(
-      store.get("MemberCreated", id.toHexString()),
-    );
-  }
-
-  get id(): Bytes {
-    let value = this.get("id");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBytes();
-    }
-  }
-
-  set id(value: Bytes) {
-    this.set("id", Value.fromBytes(value));
-  }
-
-  get memberId(): Bytes {
-    let value = this.get("memberId");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBytes();
-    }
-  }
-
-  set memberId(value: Bytes) {
-    this.set("memberId", Value.fromBytes(value));
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
   }
 
   get name(): string {
@@ -192,34 +63,8 @@ export class MemberCreated extends Entity {
     this.set("name", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
-    let value = this.get("blockNumber");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
-  }
-
-  get blockTimestamp(): BigInt {
-    let value = this.get("blockTimestamp");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set blockTimestamp(value: BigInt) {
-    this.set("blockTimestamp", Value.fromBigInt(value));
-  }
-
-  get transactionHash(): Bytes {
-    let value = this.get("transactionHash");
+  get memberAddr(): Bytes {
+    let value = this.get("memberAddr");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -227,56 +72,75 @@ export class MemberCreated extends Entity {
     }
   }
 
-  set transactionHash(value: Bytes) {
-    this.set("transactionHash", Value.fromBytes(value));
+  set memberAddr(value: Bytes) {
+    this.set("memberAddr", Value.fromBytes(value));
+  }
+
+  get organization(): MemberOrganizationLoader {
+    return new MemberOrganizationLoader(
+      "Member",
+      this.get("id")!.toString(),
+      "organization",
+    );
+  }
+
+  get votingPower(): string {
+    let value = this.get("votingPower");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set votingPower(value: string) {
+    this.set("votingPower", Value.fromString(value));
   }
 }
 
-export class OrganizationCreated extends Entity {
-  constructor(id: Bytes) {
+export class Organization extends Entity {
+  constructor(id: string) {
     super();
-    this.set("id", Value.fromBytes(id));
+    this.set("id", Value.fromString(id));
   }
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save OrganizationCreated entity without an ID");
+    assert(id != null, "Cannot save Organization entity without an ID");
     if (id) {
       assert(
-        id.kind == ValueKind.BYTES,
-        `Entities of type OrganizationCreated must have an ID of type Bytes but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+        id.kind == ValueKind.STRING,
+        `Entities of type Organization must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
-      store.set("OrganizationCreated", id.toBytes().toHexString(), this);
+      store.set("Organization", id.toString(), this);
     }
   }
 
-  static loadInBlock(id: Bytes): OrganizationCreated | null {
-    return changetype<OrganizationCreated | null>(
-      store.get_in_block("OrganizationCreated", id.toHexString()),
+  static loadInBlock(id: string): Organization | null {
+    return changetype<Organization | null>(
+      store.get_in_block("Organization", id),
     );
   }
 
-  static load(id: Bytes): OrganizationCreated | null {
-    return changetype<OrganizationCreated | null>(
-      store.get("OrganizationCreated", id.toHexString()),
-    );
+  static load(id: string): Organization | null {
+    return changetype<Organization | null>(store.get("Organization", id));
   }
 
-  get id(): Bytes {
+  get id(): string {
     let value = this.get("id");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set id(value: Bytes) {
-    this.set("id", Value.fromBytes(value));
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
   }
 
-  get orgId(): Bytes {
-    let value = this.get("orgId");
+  get owner(): Bytes {
+    let value = this.get("owner");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -284,8 +148,8 @@ export class OrganizationCreated extends Entity {
     }
   }
 
-  set orgId(value: Bytes) {
-    this.set("orgId", Value.fromBytes(value));
+  set owner(value: Bytes) {
+    this.set("owner", Value.fromBytes(value));
   }
 
   get name(): string {
@@ -301,8 +165,128 @@ export class OrganizationCreated extends Entity {
     this.set("name", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
-    let value = this.get("blockNumber");
+  get member(): MemberOrganizationLoader {
+    return new MemberOrganizationLoader(
+      "Organization",
+      this.get("id")!.toString(),
+      "member",
+    );
+  }
+}
+
+export class MemberOrganization extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save MemberOrganization entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type MemberOrganization must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("MemberOrganization", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): MemberOrganization | null {
+    return changetype<MemberOrganization | null>(
+      store.get_in_block("MemberOrganization", id),
+    );
+  }
+
+  static load(id: string): MemberOrganization | null {
+    return changetype<MemberOrganization | null>(
+      store.get("MemberOrganization", id),
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get member(): string {
+    let value = this.get("member");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set member(value: string) {
+    this.set("member", Value.fromString(value));
+  }
+
+  get organization(): string {
+    let value = this.get("organization");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set organization(value: string) {
+    this.set("organization", Value.fromString(value));
+  }
+}
+
+export class VotingPower extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save VotingPower entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type VotingPower must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("VotingPower", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): VotingPower | null {
+    return changetype<VotingPower | null>(
+      store.get_in_block("VotingPower", id),
+    );
+  }
+
+  static load(id: string): VotingPower | null {
+    return changetype<VotingPower | null>(store.get("VotingPower", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get value(): BigInt {
+    let value = this.get("value");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -310,33 +294,51 @@ export class OrganizationCreated extends Entity {
     }
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set value(value: BigInt) {
+    this.set("value", Value.fromBigInt(value));
   }
 
-  get blockTimestamp(): BigInt {
-    let value = this.get("blockTimestamp");
+  get member(): string {
+    let value = this.get("member");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBigInt();
+      return value.toString();
     }
   }
 
-  set blockTimestamp(value: BigInt) {
-    this.set("blockTimestamp", Value.fromBigInt(value));
+  set member(value: string) {
+    this.set("member", Value.fromString(value));
   }
 
-  get transactionHash(): Bytes {
-    let value = this.get("transactionHash");
+  get organization(): string {
+    let value = this.get("organization");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set transactionHash(value: Bytes) {
-    this.set("transactionHash", Value.fromBytes(value));
+  set organization(value: string) {
+    this.set("organization", Value.fromString(value));
+  }
+}
+
+export class MemberOrganizationLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): MemberOrganization[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<MemberOrganization[]>(value);
   }
 }
