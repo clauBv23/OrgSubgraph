@@ -8,11 +8,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: OrgManager
-    network: mumbai
+    network: sepolia
     source:
-      address: "0x6859e7Bea4428719c3bcF28e6981Eb825D5403ec"
+      address: "0xB3730Ba12699f82f3E29adB2907634b9a3D072C6"
       abi: OrgManager
-      startBlock: 46260990
+      startBlock: 5348717
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
