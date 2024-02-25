@@ -5,6 +5,7 @@ struct Member {
     bytes32 id;
     string name;
     address adminAddr;
+    address delegatorAddr;
 }
 
 struct Organization {

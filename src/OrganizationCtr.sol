@@ -2,11 +2,10 @@
 pragma solidity ^0.8.13;
 
 import {Organization} from "./Structs.sol";
+import {IOrgsManagerEvents} from "./interfaces/IOrgsManagerEvents.sol";
 
-contract OrganizationCtr {
+contract OrganizationCtr is IOrgsManagerEvents {
     mapping(bytes32 orgId => Organization organization) public organizations;
-
-    event OrganizationCreated(bytes32 orgId, string name, address owner);
 
     function createOrganization(bytes32 _id, string calldata _name) external {
         organizations[_id] = Organization(_id, _name, msg.sender);

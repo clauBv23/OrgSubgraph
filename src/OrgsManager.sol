@@ -1,23 +1,23 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {OrganizationCtr} from "./OrganizationCtr.sol";
-import {MemberCtr} from "./MemberCtr.sol";
-
 import {Organization, Member} from "./Structs.sol";
 
-contract OrgsManager is OrganizationCtr, MemberCtr {
-    // ? should the events have indexes?
-    event MemberJoinedOrganization(bytes32 orgId, bytes32 memberId);
-    event MemberLeavedOrganization(bytes32 orgId, bytes32 memberId);
-    event VotingPowerSetToMember(
-        bytes32 orgId,
-        bytes32 memberId,
-        uint256 votingPower
-    );
+import {MemberCtr} from "./MemberCtr.sol";
+import {AllianceCtr} from "./AllianceCtr.sol";
+import {OrganizationCtr} from "./OrganizationCtr.sol";
 
+import {IOrgsManagerEvents} from "./interfaces/IOrgsManagerEvents.sol";
+
+contract OrgsManager is
+    IOrgsManagerEvents,
+    OrganizationCtr,
+    MemberCtr,
+    AllianceCtr
+{
     error NonExistentOrganization(bytes32 orgId);
     error NonExistentMember(bytes32 memberId);
+    error NonExistentAlliance(uint256 allianceNumber);
     error PermissionDenied(address caller);
 
     function joinOrganization(
@@ -57,6 +57,42 @@ contract OrgsManager is OrganizationCtr, MemberCtr {
         emit VotingPowerSetToMember(_orgId, _memberId, _votingPower);
     }
 
+    function joinAlliance(
+        uint256 _allianceNumber,
+        bytes32 _orgId
+    )
+        external
+        existentAlliance(_allianceNumber)
+        existentOrganization(_orgId)
+        onlyOrganizationOwner(_orgId)
+    {
+        emit OrganizationJoinedAlliance(_allianceNumber, _orgId);
+    }
+
+    function leaveAlliance(
+        uint256 _allianceNumber,
+        bytes32 _orgId
+    )
+        external
+        existentAlliance(_allianceNumber)
+        existentOrganization(_orgId)
+        onlyOrganizationOwner(_orgId)
+    {
+        emit OrganizationLeavedAlliance(_allianceNumber, _orgId);
+    }
+
+    function addMemberDelegator(
+        bytes32 _memberId,
+        address _delegatorAddr
+    ) external existentMember(_memberId) onlyMemberAdmin(_memberId) {
+        _addDelegatorToMember(_memberId, _delegatorAddr);
+    }
+
+    modifier existentAlliance(uint256 _allianceNumber) {
+        _checkAllianceExists(_allianceNumber);
+        _;
+    }
+
     modifier existentMember(bytes32 _memberId) {
         _checkMemberExists(_memberId);
         _;
@@ -75,6 +111,12 @@ contract OrgsManager is OrganizationCtr, MemberCtr {
     modifier onlyOrganizationOwner(bytes32 _orgId) {
         _checkOrganizationExists(_orgId);
         _;
+    }
+
+    function _checkAllianceExists(uint256 _allianceNumber) internal view {
+        if (!alliances[_allianceNumber]) {
+            revert NonExistentAlliance(_allianceNumber);
+        }
     }
 
     function _checkMemberExists(bytes32 _memberId) internal view {
@@ -101,10 +143,3 @@ contract OrgsManager is OrganizationCtr, MemberCtr {
         }
     }
 }
-
-// todo add 3 types of relationships
-// 1 to 1
-// 1 to many
-// many to many => already achieved with organization <=> members
-// todo a subgraph for a dynamically created subgraph
-// todo a call handlers
