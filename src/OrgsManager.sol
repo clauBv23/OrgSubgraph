@@ -109,7 +109,7 @@ contract OrgsManager is
     }
 
     modifier onlyOrganizationOwner(bytes32 _orgId) {
-        _checkOrganizationExists(_orgId);
+        _checkIsOrganizationOwner(_orgId);
         _;
     }
 
