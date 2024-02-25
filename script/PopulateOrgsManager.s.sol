@@ -7,6 +7,9 @@ import {OrgsManager} from "../src/OrgsManager.sol";
 contract PopulateOrgsManager is Script {
     OrgsManager manager;
 
+    uint256 alliance1Number = 1;
+    uint256 alliance2Number = 2;
+
     uint256 alice = vm.envUint("PRIVATE_KEY1");
     uint256 bob = vm.envUint("PRIVATE_KEY2");
     uint256 charlie = vm.envUint("PRIVATE_KEY3");
@@ -30,6 +33,12 @@ contract PopulateOrgsManager is Script {
 
         // set voting power to members
         _setMembersVotingPower();
+
+        // create alliances and join organizations
+        _createAllianceAndJoinOrganizations();
+
+        // define delegator to members
+        _defineDelegatorToMember();
     }
 
     function _createMembersAndOrgs() internal {
@@ -99,6 +108,7 @@ contract PopulateOrgsManager is Script {
         vm.stopBroadcast();
 
         // set voting power to Alice, and Bob in Charlie's org
+        //!!!!!!! it is wrong in the original script
         vm.startBroadcast(bob);
         manager.setVotingPowerToMember(
             bytes32(charlieOrgId),
@@ -113,6 +123,45 @@ contract PopulateOrgsManager is Script {
         vm.stopBroadcast();
     }
 
+    function _createAllianceAndJoinOrganizations() internal {
+        // set voting power to Bob, and Charlie in Alice's org
+        vm.startBroadcast();
+        manager.createAlliance(alliance1Number);
+        manager.createAlliance(alliance2Number);
+        vm.stopBroadcast();
+
+        // join alice's and bob's org to alliance1
+        vm.startBroadcast(alice);
+        manager.joinAlliance(alliance1Number, bytes32(aliceOrgId));
+        vm.stopBroadcast();
+
+        // set voting power to Alice, and Charlie in Bob's org
+        vm.startBroadcast(bob);
+        manager.joinAlliance(alliance1Number, bytes32(bobOrgId));
+        vm.stopBroadcast();
+
+        // join charlie's org to alliance2
+        vm.startBroadcast(charlie);
+        manager.joinAlliance(alliance2Number, bytes32(charlieOrgId));
+        vm.stopBroadcast();
+    }
+
+    function _defineDelegatorToMember() internal {
+        // define the script address as alice bob and charlie's delegator
+        vm.startBroadcast(alice);
+        manager.addMemberDelegator(bytes32(aliceId), address(this));
+        vm.stopBroadcast();
+
+        vm.startBroadcast(bob);
+        manager.addMemberDelegator(bytes32(bobId), address(this));
+
+        vm.stopBroadcast();
+
+        vm.startBroadcast(charlie);
+        manager.addMemberDelegator(bytes32(charlieId), address(this));
+        vm.stopBroadcast();
+    }
+
     /**
      *  1- Alice
      *  2- Bob
@@ -122,9 +171,15 @@ contract PopulateOrgsManager is Script {
      *  20- Bob's Org
      *  30- Charlie's Org
      */
-    function memberLeaveOrg(uint256 memberNo, uint256 orgNo) external {
+    function memberLeaveOrg(uint256 _memberNo, uint256 _orgNo) external {
         vm.startBroadcast();
-        manager.leaveOrganization(bytes32(orgNo), bytes32(memberNo));
+        manager.leaveOrganization(bytes32(_orgNo), bytes32(_memberNo));
+        vm.stopBroadcast();
+    }
+
+    function orgLeaveAlliance(uint256 _allianceNo, uint256 _orgNo) external {
+        vm.startBroadcast();
+        manager.leaveAlliance(_allianceNo, bytes32(_orgNo));
         vm.stopBroadcast();
     }
 }
