@@ -9,7 +9,6 @@ import {
   Member,
   Organization,
   MemberOrganization,
-  VotingPower
 } from "../generated/schema"
 
 export function handleMemberJoinedOrganization(
@@ -33,16 +32,11 @@ export function handleMemberLeavedOrganization(
 export function handleVotingPowerSetToMember(
   event: VotingPowerSetToMemberEvent
 ): void {
-  let votingPower = new VotingPower([event.params.orgId.toString(),event.params.memberId.toString() ].join("-"))
-  votingPower.value = event.params.votingPower
-  votingPower.member = event.params.memberId.toString()
-  votingPower.organization = event.params.orgId.toString()
-  let member =  Member.load(event.params.memberId.toString())
-  if (member != null) {
-    member.votingPower = votingPower.id
-    member.save()
+  let memberOrg =  MemberOrganization.load ([event.params.orgId.toString(),event.params.memberId.toString() ].join("-"))
+  if (memberOrg != null) {
+    memberOrg.votingPower = event.params.votingPower
+    memberOrg.save()
   }
-  votingPower.save()
 }
 
 export function handleMemberCreated(event: MemberCreatedEvent): void {

@@ -83,23 +83,6 @@ export class Member extends Entity {
       "organization",
     );
   }
-
-  get votingPower(): string | null {
-    let value = this.get("votingPower");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toString();
-    }
-  }
-
-  set votingPower(value: string | null) {
-    if (!value) {
-      this.unset("votingPower");
-    } else {
-      this.set("votingPower", Value.fromString(<string>value));
-    }
-  }
 }
 
 export class Organization extends Entity {
@@ -246,86 +229,22 @@ export class MemberOrganization extends Entity {
   set organization(value: string) {
     this.set("organization", Value.fromString(value));
   }
-}
 
-export class VotingPower extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save VotingPower entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type VotingPower must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
-      );
-      store.set("VotingPower", id.toString(), this);
-    }
-  }
-
-  static loadInBlock(id: string): VotingPower | null {
-    return changetype<VotingPower | null>(
-      store.get_in_block("VotingPower", id),
-    );
-  }
-
-  static load(id: string): VotingPower | null {
-    return changetype<VotingPower | null>(store.get("VotingPower", id));
-  }
-
-  get id(): string {
-    let value = this.get("id");
+  get votingPower(): BigInt | null {
+    let value = this.get("votingPower");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toString();
-    }
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get value(): BigInt {
-    let value = this.get("value");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
       return value.toBigInt();
     }
   }
 
-  set value(value: BigInt) {
-    this.set("value", Value.fromBigInt(value));
-  }
-
-  get member(): string {
-    let value = this.get("member");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+  set votingPower(value: BigInt | null) {
+    if (!value) {
+      this.unset("votingPower");
     } else {
-      return value.toString();
+      this.set("votingPower", Value.fromBigInt(<BigInt>value));
     }
-  }
-
-  set member(value: string) {
-    this.set("member", Value.fromString(value));
-  }
-
-  get organization(): string {
-    let value = this.get("organization");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toString();
-    }
-  }
-
-  set organization(value: string) {
-    this.set("organization", Value.fromString(value));
   }
 }
 

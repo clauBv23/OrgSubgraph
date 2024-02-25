@@ -3,7 +3,6 @@ type Member @entity(immutable: false) {
   name: String! # string
   adminAddr: Bytes! # address
   organization: [MemberOrganization!]! @derivedFrom(field: "member")  
-  votingPower: VotingPower
 }
 
 type Organization @entity(immutable: false) {
@@ -14,15 +13,9 @@ type Organization @entity(immutable: false) {
 }
 
 # many to many relationship
-type MemberOrganization @entity(immutable: true){
+type MemberOrganization @entity(immutable: false){
   id: ID! # Set to `[memberId, organizationId].join('-')`
   member: Member!
   organization: Organization!
-}
-
-type VotingPower @entity(immutable: false) {
-  id: ID! # Set to `[memberId, organizationId].join('-')`
-  value: BigInt! # uint256
-  member: Member!
-  organization: Organization!
+  votingPower: BigInt # uint256
 }
