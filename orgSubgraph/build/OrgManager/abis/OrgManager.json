@@ -1,6 +1,56 @@
 [
   {
     "type": "function",
+    "name": "addMemberDelegator",
+    "inputs": [
+      {
+        "name": "_memberId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
+        "name": "_delegatorAddr",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "alliances",
+    "inputs": [
+      {
+        "name": "allianceId",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "exists",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "createAlliance",
+    "inputs": [
+      {
+        "name": "_allianceNumber",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "createMember",
     "inputs": [
       {
@@ -19,7 +69,7 @@
   },
   {
     "type": "function",
-    "name": "createOrg",
+    "name": "createOrganization",
     "inputs": [
       {
         "name": "_id",
@@ -75,6 +125,24 @@
   },
   {
     "type": "function",
+    "name": "joinAlliance",
+    "inputs": [
+      {
+        "name": "_allianceNumber",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_orgId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "joinOrganization",
     "inputs": [
       {
@@ -84,6 +152,24 @@
       },
       {
         "name": "_memberId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "leaveAlliance",
+    "inputs": [
+      {
+        "name": "_allianceNumber",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_orgId",
         "type": "bytes32",
         "internalType": "bytes32"
       }
@@ -151,6 +237,11 @@
       },
       {
         "name": "adminAddr",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "delegatorAddr",
         "type": "address",
         "internalType": "address"
       }
@@ -230,6 +321,19 @@
   },
   {
     "type": "event",
+    "name": "AllianceCreated",
+    "inputs": [
+      {
+        "name": "allianceNumber",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "MemberCreated",
     "inputs": [
       {
@@ -246,6 +350,25 @@
       },
       {
         "name": "adminAddr",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "MemberDelegatorAdded",
+    "inputs": [
+      {
+        "name": "memberId",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "delegatorAddr",
         "type": "address",
         "indexed": false,
         "internalType": "address"
@@ -318,6 +441,44 @@
   },
   {
     "type": "event",
+    "name": "OrganizationJoinedAlliance",
+    "inputs": [
+      {
+        "name": "allianceNumber",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "orgId",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "OrganizationLeavedAlliance",
+    "inputs": [
+      {
+        "name": "allianceNumber",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "orgId",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "VotingPowerSetToMember",
     "inputs": [
       {
@@ -340,6 +501,17 @@
       }
     ],
     "anonymous": false
+  },
+  {
+    "type": "error",
+    "name": "NonExistentAlliance",
+    "inputs": [
+      {
+        "name": "allianceNumber",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
   },
   {
     "type": "error",

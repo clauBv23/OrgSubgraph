@@ -35,4 +35,12 @@ dataSources:
           handler: handleMemberCreated
         - event: OrganizationCreated(bytes32,string,address)
           handler: handleOrganizationCreated
+        - event: MemberDelegatorAdded(bytes32,address)
+          handler: handleMemberDelegatorAdded
+        - event: OrganizationJoinedAlliance(uint256,bytes32)
+          handler: handleOrganizationJoinedAlliance
+        - event: OrganizationLeavedAlliance(uint256,bytes32)
+          handler: handleOrganizationLeavedAlliance
+        - event: AllianceCreated(uint256)
+          handler: handleAllianceCreated
       file: ./src/org-manager.ts

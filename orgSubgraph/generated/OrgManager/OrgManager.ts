@@ -10,6 +10,24 @@ import {
   BigInt,
 } from "@graphprotocol/graph-ts";
 
+export class AllianceCreated extends ethereum.Event {
+  get params(): AllianceCreated__Params {
+    return new AllianceCreated__Params(this);
+  }
+}
+
+export class AllianceCreated__Params {
+  _event: AllianceCreated;
+
+  constructor(event: AllianceCreated) {
+    this._event = event;
+  }
+
+  get allianceNumber(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+}
+
 export class MemberCreated extends ethereum.Event {
   get params(): MemberCreated__Params {
     return new MemberCreated__Params(this);
@@ -33,6 +51,28 @@ export class MemberCreated__Params {
 
   get adminAddr(): Address {
     return this._event.parameters[2].value.toAddress();
+  }
+}
+
+export class MemberDelegatorAdded extends ethereum.Event {
+  get params(): MemberDelegatorAdded__Params {
+    return new MemberDelegatorAdded__Params(this);
+  }
+}
+
+export class MemberDelegatorAdded__Params {
+  _event: MemberDelegatorAdded;
+
+  constructor(event: MemberDelegatorAdded) {
+    this._event = event;
+  }
+
+  get memberId(): Bytes {
+    return this._event.parameters[0].value.toBytes();
+  }
+
+  get delegatorAddr(): Address {
+    return this._event.parameters[1].value.toAddress();
   }
 }
 
@@ -106,6 +146,50 @@ export class OrganizationCreated__Params {
   }
 }
 
+export class OrganizationJoinedAlliance extends ethereum.Event {
+  get params(): OrganizationJoinedAlliance__Params {
+    return new OrganizationJoinedAlliance__Params(this);
+  }
+}
+
+export class OrganizationJoinedAlliance__Params {
+  _event: OrganizationJoinedAlliance;
+
+  constructor(event: OrganizationJoinedAlliance) {
+    this._event = event;
+  }
+
+  get allianceNumber(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get orgId(): Bytes {
+    return this._event.parameters[1].value.toBytes();
+  }
+}
+
+export class OrganizationLeavedAlliance extends ethereum.Event {
+  get params(): OrganizationLeavedAlliance__Params {
+    return new OrganizationLeavedAlliance__Params(this);
+  }
+}
+
+export class OrganizationLeavedAlliance__Params {
+  _event: OrganizationLeavedAlliance;
+
+  constructor(event: OrganizationLeavedAlliance) {
+    this._event = event;
+  }
+
+  get allianceNumber(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get orgId(): Bytes {
+    return this._event.parameters[1].value.toBytes();
+  }
+}
+
 export class VotingPowerSetToMember extends ethereum.Event {
   get params(): VotingPowerSetToMember__Params {
     return new VotingPowerSetToMember__Params(this);
@@ -136,11 +220,13 @@ export class OrgManager__membersResult {
   value0: Bytes;
   value1: string;
   value2: Address;
+  value3: Address;
 
-  constructor(value0: Bytes, value1: string, value2: Address) {
+  constructor(value0: Bytes, value1: string, value2: Address, value3: Address) {
     this.value0 = value0;
     this.value1 = value1;
     this.value2 = value2;
+    this.value3 = value3;
   }
 
   toMap(): TypedMap<string, ethereum.Value> {
@@ -148,6 +234,7 @@ export class OrgManager__membersResult {
     map.set("value0", ethereum.Value.fromFixedBytes(this.value0));
     map.set("value1", ethereum.Value.fromString(this.value1));
     map.set("value2", ethereum.Value.fromAddress(this.value2));
+    map.set("value3", ethereum.Value.fromAddress(this.value3));
     return map;
   }
 
@@ -161,6 +248,10 @@ export class OrgManager__membersResult {
 
   getAdminAddr(): Address {
     return this.value2;
+  }
+
+  getDelegatorAddr(): Address {
+    return this.value3;
   }
 }
 
@@ -199,6 +290,25 @@ export class OrgManager__organizationsResult {
 export class OrgManager extends ethereum.SmartContract {
   static bind(address: Address): OrgManager {
     return new OrgManager("OrgManager", address);
+  }
+
+  alliances(allianceId: BigInt): boolean {
+    let result = super.call("alliances", "alliances(uint256):(bool)", [
+      ethereum.Value.fromUnsignedBigInt(allianceId),
+    ]);
+
+    return result[0].toBoolean();
+  }
+
+  try_alliances(allianceId: BigInt): ethereum.CallResult<boolean> {
+    let result = super.tryCall("alliances", "alliances(uint256):(bool)", [
+      ethereum.Value.fromUnsignedBigInt(allianceId),
+    ]);
+    if (result.reverted) {
+      return new ethereum.CallResult();
+    }
+    let value = result.value;
+    return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
   isMemberAdmin(_id: Bytes): boolean {
@@ -267,7 +377,7 @@ export class OrgManager extends ethereum.SmartContract {
   members(memberId: Bytes): OrgManager__membersResult {
     let result = super.call(
       "members",
-      "members(bytes32):(bytes32,string,address)",
+      "members(bytes32):(bytes32,string,address,address)",
       [ethereum.Value.fromFixedBytes(memberId)],
     );
 
@@ -275,13 +385,14 @@ export class OrgManager extends ethereum.SmartContract {
       result[0].toBytes(),
       result[1].toString(),
       result[2].toAddress(),
+      result[3].toAddress(),
     );
   }
 
   try_members(memberId: Bytes): ethereum.CallResult<OrgManager__membersResult> {
     let result = super.tryCall(
       "members",
-      "members(bytes32):(bytes32,string,address)",
+      "members(bytes32):(bytes32,string,address,address)",
       [ethereum.Value.fromFixedBytes(memberId)],
     );
     if (result.reverted) {
@@ -293,6 +404,7 @@ export class OrgManager extends ethereum.SmartContract {
         value[0].toBytes(),
         value[1].toString(),
         value[2].toAddress(),
+        value[3].toAddress(),
       ),
     );
   }
@@ -356,6 +468,70 @@ export class OrgManager extends ethereum.SmartContract {
   }
 }
 
+export class AddMemberDelegatorCall extends ethereum.Call {
+  get inputs(): AddMemberDelegatorCall__Inputs {
+    return new AddMemberDelegatorCall__Inputs(this);
+  }
+
+  get outputs(): AddMemberDelegatorCall__Outputs {
+    return new AddMemberDelegatorCall__Outputs(this);
+  }
+}
+
+export class AddMemberDelegatorCall__Inputs {
+  _call: AddMemberDelegatorCall;
+
+  constructor(call: AddMemberDelegatorCall) {
+    this._call = call;
+  }
+
+  get _memberId(): Bytes {
+    return this._call.inputValues[0].value.toBytes();
+  }
+
+  get _delegatorAddr(): Address {
+    return this._call.inputValues[1].value.toAddress();
+  }
+}
+
+export class AddMemberDelegatorCall__Outputs {
+  _call: AddMemberDelegatorCall;
+
+  constructor(call: AddMemberDelegatorCall) {
+    this._call = call;
+  }
+}
+
+export class CreateAllianceCall extends ethereum.Call {
+  get inputs(): CreateAllianceCall__Inputs {
+    return new CreateAllianceCall__Inputs(this);
+  }
+
+  get outputs(): CreateAllianceCall__Outputs {
+    return new CreateAllianceCall__Outputs(this);
+  }
+}
+
+export class CreateAllianceCall__Inputs {
+  _call: CreateAllianceCall;
+
+  constructor(call: CreateAllianceCall) {
+    this._call = call;
+  }
+
+  get _allianceNumber(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+}
+
+export class CreateAllianceCall__Outputs {
+  _call: CreateAllianceCall;
+
+  constructor(call: CreateAllianceCall) {
+    this._call = call;
+  }
+}
+
 export class CreateMemberCall extends ethereum.Call {
   get inputs(): CreateMemberCall__Inputs {
     return new CreateMemberCall__Inputs(this);
@@ -390,20 +566,20 @@ export class CreateMemberCall__Outputs {
   }
 }
 
-export class CreateOrgCall extends ethereum.Call {
-  get inputs(): CreateOrgCall__Inputs {
-    return new CreateOrgCall__Inputs(this);
+export class CreateOrganizationCall extends ethereum.Call {
+  get inputs(): CreateOrganizationCall__Inputs {
+    return new CreateOrganizationCall__Inputs(this);
   }
 
-  get outputs(): CreateOrgCall__Outputs {
-    return new CreateOrgCall__Outputs(this);
+  get outputs(): CreateOrganizationCall__Outputs {
+    return new CreateOrganizationCall__Outputs(this);
   }
 }
 
-export class CreateOrgCall__Inputs {
-  _call: CreateOrgCall;
+export class CreateOrganizationCall__Inputs {
+  _call: CreateOrganizationCall;
 
-  constructor(call: CreateOrgCall) {
+  constructor(call: CreateOrganizationCall) {
     this._call = call;
   }
 
@@ -416,10 +592,44 @@ export class CreateOrgCall__Inputs {
   }
 }
 
-export class CreateOrgCall__Outputs {
-  _call: CreateOrgCall;
+export class CreateOrganizationCall__Outputs {
+  _call: CreateOrganizationCall;
 
-  constructor(call: CreateOrgCall) {
+  constructor(call: CreateOrganizationCall) {
+    this._call = call;
+  }
+}
+
+export class JoinAllianceCall extends ethereum.Call {
+  get inputs(): JoinAllianceCall__Inputs {
+    return new JoinAllianceCall__Inputs(this);
+  }
+
+  get outputs(): JoinAllianceCall__Outputs {
+    return new JoinAllianceCall__Outputs(this);
+  }
+}
+
+export class JoinAllianceCall__Inputs {
+  _call: JoinAllianceCall;
+
+  constructor(call: JoinAllianceCall) {
+    this._call = call;
+  }
+
+  get _allianceNumber(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get _orgId(): Bytes {
+    return this._call.inputValues[1].value.toBytes();
+  }
+}
+
+export class JoinAllianceCall__Outputs {
+  _call: JoinAllianceCall;
+
+  constructor(call: JoinAllianceCall) {
     this._call = call;
   }
 }
@@ -454,6 +664,40 @@ export class JoinOrganizationCall__Outputs {
   _call: JoinOrganizationCall;
 
   constructor(call: JoinOrganizationCall) {
+    this._call = call;
+  }
+}
+
+export class LeaveAllianceCall extends ethereum.Call {
+  get inputs(): LeaveAllianceCall__Inputs {
+    return new LeaveAllianceCall__Inputs(this);
+  }
+
+  get outputs(): LeaveAllianceCall__Outputs {
+    return new LeaveAllianceCall__Outputs(this);
+  }
+}
+
+export class LeaveAllianceCall__Inputs {
+  _call: LeaveAllianceCall;
+
+  constructor(call: LeaveAllianceCall) {
+    this._call = call;
+  }
+
+  get _allianceNumber(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+
+  get _orgId(): Bytes {
+    return this._call.inputValues[1].value.toBytes();
+  }
+}
+
+export class LeaveAllianceCall__Outputs {
+  _call: LeaveAllianceCall;
+
+  constructor(call: LeaveAllianceCall) {
     this._call = call;
   }
 }

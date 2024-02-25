@@ -83,6 +83,89 @@ export class Member extends Entity {
       "organization",
     );
   }
+
+  get delegator(): string | null {
+    let value = this.get("delegator");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set delegator(value: string | null) {
+    if (!value) {
+      this.unset("delegator");
+    } else {
+      this.set("delegator", Value.fromString(<string>value));
+    }
+  }
+}
+
+export class Delegator extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Delegator entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Delegator must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("Delegator", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Delegator | null {
+    return changetype<Delegator | null>(store.get_in_block("Delegator", id));
+  }
+
+  static load(id: string): Delegator | null {
+    return changetype<Delegator | null>(store.get("Delegator", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get address(): Bytes {
+    let value = this.get("address");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set address(value: Bytes) {
+    this.set("address", Value.fromBytes(value));
+  }
+
+  get member(): string {
+    let value = this.get("member");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set member(value: string) {
+    this.set("member", Value.fromString(value));
+  }
 }
 
 export class Organization extends Entity {
@@ -158,6 +241,23 @@ export class Organization extends Entity {
       this.get("id")!.toString(),
       "member",
     );
+  }
+
+  get alliance(): string | null {
+    let value = this.get("alliance");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set alliance(value: string | null) {
+    if (!value) {
+      this.unset("alliance");
+    } else {
+      this.set("alliance", Value.fromString(<string>value));
+    }
   }
 }
 
@@ -248,6 +348,54 @@ export class MemberOrganization extends Entity {
   }
 }
 
+export class Alliance extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Alliance entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Alliance must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("Alliance", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Alliance | null {
+    return changetype<Alliance | null>(store.get_in_block("Alliance", id));
+  }
+
+  static load(id: string): Alliance | null {
+    return changetype<Alliance | null>(store.get("Alliance", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get organizations(): OrganizationLoader {
+    return new OrganizationLoader(
+      "Alliance",
+      this.get("id")!.toString(),
+      "organizations",
+    );
+  }
+}
+
 export class MemberOrganizationLoader extends Entity {
   _entity: string;
   _field: string;
@@ -263,5 +411,23 @@ export class MemberOrganizationLoader extends Entity {
   load(): MemberOrganization[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<MemberOrganization[]>(value);
+  }
+}
+
+export class OrganizationLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): Organization[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<Organization[]>(value);
   }
 }

@@ -3,6 +3,13 @@ type Member @entity(immutable: false) {
   name: String! # string
   adminAddr: Bytes! # address
   organization: [MemberOrganization!]! @derivedFrom(field: "member")  
+  delegator: Delegator
+}
+
+type Delegator @entity(immutable: false) {
+  id: ID! # bytes32   `the id is the member id`
+  address: Bytes! # address
+  member: Member! 
 }
 
 type Organization @entity(immutable: false) {
@@ -10,6 +17,7 @@ type Organization @entity(immutable: false) {
   name: String! # string
   owner: Bytes! # address
   member: [MemberOrganization!]! @derivedFrom(field: "organization")
+  alliance: Alliance
 }
 
 # many to many relationship
@@ -18,4 +26,9 @@ type MemberOrganization @entity(immutable: false){
   member: Member!
   organization: Organization!
   votingPower: BigInt # uint256
+}
+
+type Alliance @entity(immutable: false) {
+  id: ID! # bytes32
+  organizations: [Organization!]! @derivedFrom(field: "alliance")
 }
