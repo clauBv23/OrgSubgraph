@@ -37,12 +37,18 @@ export function handleVotingPowerSetToMember(
   votingPower.value = event.params.votingPower
   votingPower.member = event.params.memberId.toString()
   votingPower.organization = event.params.orgId.toString()
+  let member =  Member.load(event.params.memberId.toString())
+  if (member != null) {
+    member.votingPower = votingPower.id
+    member.save()
+  }
   votingPower.save()
 }
 
 export function handleMemberCreated(event: MemberCreatedEvent): void {
   let member = new Member(event.params.memberId.toString())
   member.name = event.params.name
+  member.adminAddr = event.params.adminAddr
   member.save()
 }
 
@@ -51,5 +57,6 @@ export function handleOrganizationCreated(
 ): void {
   let organization = new Organization(event.params.orgId.toString())
   organization.name = event.params.name
+  organization.owner = event.params.owner
   organization.save()
 }

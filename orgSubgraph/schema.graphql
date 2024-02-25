@@ -1,15 +1,15 @@
 type Member @entity(immutable: false) {
   id: ID! # bytes32
   name: String! # string
-  memberAddr: Bytes! # address
+  adminAddr: Bytes! # address
   organization: [MemberOrganization!]! @derivedFrom(field: "member")  
-  votingPower: VotingPower!
+  votingPower: VotingPower
 }
 
 type Organization @entity(immutable: false) {
   id: ID! # bytes32
-  owner: Bytes! # address
   name: String! # string
+  owner: Bytes! # address
   member: [MemberOrganization!]! @derivedFrom(field: "organization")
 }
 

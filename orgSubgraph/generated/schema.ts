@@ -63,8 +63,8 @@ export class Member extends Entity {
     this.set("name", Value.fromString(value));
   }
 
-  get memberAddr(): Bytes {
-    let value = this.get("memberAddr");
+  get adminAddr(): Bytes {
+    let value = this.get("adminAddr");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -72,8 +72,8 @@ export class Member extends Entity {
     }
   }
 
-  set memberAddr(value: Bytes) {
-    this.set("memberAddr", Value.fromBytes(value));
+  set adminAddr(value: Bytes) {
+    this.set("adminAddr", Value.fromBytes(value));
   }
 
   get organization(): MemberOrganizationLoader {
@@ -84,17 +84,21 @@ export class Member extends Entity {
     );
   }
 
-  get votingPower(): string {
+  get votingPower(): string | null {
     let value = this.get("votingPower");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
       return value.toString();
     }
   }
 
-  set votingPower(value: string) {
-    this.set("votingPower", Value.fromString(value));
+  set votingPower(value: string | null) {
+    if (!value) {
+      this.unset("votingPower");
+    } else {
+      this.set("votingPower", Value.fromString(<string>value));
+    }
   }
 }
 
@@ -139,19 +143,6 @@ export class Organization extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get owner(): Bytes {
-    let value = this.get("owner");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBytes();
-    }
-  }
-
-  set owner(value: Bytes) {
-    this.set("owner", Value.fromBytes(value));
-  }
-
   get name(): string {
     let value = this.get("name");
     if (!value || value.kind == ValueKind.NULL) {
@@ -163,6 +154,19 @@ export class Organization extends Entity {
 
   set name(value: string) {
     this.set("name", Value.fromString(value));
+  }
+
+  get owner(): Bytes {
+    let value = this.get("owner");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set owner(value: Bytes) {
+    this.set("owner", Value.fromBytes(value));
   }
 
   get member(): MemberOrganizationLoader {
