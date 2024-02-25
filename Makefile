@@ -3,28 +3,19 @@
 
 include .env
 
-deploy:
-	forge script script/OrgsManager.s.sol --rpc-url $(RPC_URL) --private-key $(PRIVATE_KEY)  -vvvvv --verify --broadcast
-# ifeq ($(rpc), s)
-#     RPC_URL := $(SEPOLIA_RPC_URL)
+
 ifeq ($(rpc), m)
     RPC_URL := $(MUMBAI_RPC_URL)
 else
     # Default to SEPOLIA_RPC_URL if no input provided
     RPC_URL := $(SEPOLIA_RPC_URL)
 endif
+
+deploy:
+	forge script script/OrgsManager.s.sol --rpc-url $(RPC_URL) --private-key $(PRIVATE_KEY)  -vvvvv --verify --broadcast
 
 test-deploy:
 	forge script script/OrgsManager.s.sol --rpc-url $(RPC_URL) --private-key $(PRIVATE_KEY)  -vvvvv --verify
-
-
-ifeq ($(rpc), m)
-    RPC_URL := $(MUMBAI_RPC_URL)
-else
-    # Default to SEPOLIA_RPC_URL if no input provided
-    RPC_URL := $(SEPOLIA_RPC_URL)
-endif
-
 
 # keeping this because --verify not working for mumbay
 deploy-mumbay:
@@ -41,3 +32,9 @@ test-populate:
 
 populate:
 	forge script script/PopulateOrgsManager.s.sol --sig "run(address)" $(add) --rpc-url $(RPC_URL) --private-key $(PRIVATE_KEY)  -vvvvvvv --broadcast
+
+test-leave:
+	forge script script/PopulateOrgsManager.s.sol --sig "leave(address)" $(add) --rpc-url $(RPC_URL) --private-key $(PRIVATE_KEY)  -vvvvvvv
+
+leave:
+	forge script script/PopulateOrgsManager.s.sol --sig "leave(address)" $(add) --rpc-url $(RPC_URL) --private-key $(PRIVATE_KEY)  -vvvvvvv --broadcast
