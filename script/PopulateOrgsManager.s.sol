@@ -109,7 +109,7 @@ contract PopulateOrgsManager is Script {
 
         // set voting power to Alice, and Bob in Charlie's org
         //!!!!!!! it is wrong in the original script
-        vm.startBroadcast(bob);
+        vm.startBroadcast(charlie);
         manager.setVotingPowerToMember(
             bytes32(charlieOrgId),
             bytes32(aliceId),
@@ -162,24 +162,17 @@ contract PopulateOrgsManager is Script {
         vm.stopBroadcast();
     }
 
-    /**
-     *  1- Alice
-     *  2- Bob
-     *  3- Charlie
-     *
-     *  10- Alice's Org
-     *  20- Bob's Org
-     *  30- Charlie's Org
-     */
-    function memberLeaveOrg(uint256 _memberNo, uint256 _orgNo) external {
-        vm.startBroadcast();
-        manager.leaveOrganization(bytes32(_orgNo), bytes32(_memberNo));
-        vm.stopBroadcast();
-    }
+    function leave(address _managerAddr) external {
+        manager = OrgsManager(_managerAddr);
 
-    function orgLeaveAlliance(uint256 _allianceNo, uint256 _orgNo) external {
-        vm.startBroadcast();
-        manager.leaveAlliance(_allianceNo, bytes32(_orgNo));
+        vm.startBroadcast(charlie);
+        // make charlie leave alice's org
+        manager.leaveOrganization(bytes32(aliceOrgId), bytes32(charlieId));
+        vm.stopBroadcast();
+
+        vm.startBroadcast(alice);
+        // make alice's org leave alliance1
+        manager.leaveAlliance(alliance1Number, bytes32(aliceOrgId));
         vm.stopBroadcast();
     }
 }
