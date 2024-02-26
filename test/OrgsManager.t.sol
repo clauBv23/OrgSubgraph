@@ -154,7 +154,7 @@ contract OrgsManagerTest is IOrgsManagerEvents, Test {
 
         // check event emission
         vm.expectEmit(address(manager));
-        emit JoinedAlliance(allianceNumber, bytes32(aliceOrgId));
+        emit ParticipantJoinedAlliance(allianceNumber, bytes32(aliceOrgId));
 
         manager.joinAlliance(allianceNumber, bytes32(aliceOrgId));
         vm.stopPrank();
@@ -170,7 +170,7 @@ contract OrgsManagerTest is IOrgsManagerEvents, Test {
 
         // check event emission
         vm.expectEmit(address(manager));
-        emit JoinedAlliance(allianceNumber, bytes32(aliceId));
+        emit ParticipantJoinedAlliance(allianceNumber, bytes32(aliceId));
 
         manager.joinAlliance(allianceNumber, bytes32(aliceId));
         vm.stopPrank();
@@ -188,7 +188,7 @@ contract OrgsManagerTest is IOrgsManagerEvents, Test {
         // leave alliance
         // check event emission
         vm.expectEmit(address(manager));
-        emit LeavedAlliance(allianceNumber, bytes32(aliceOrgId));
+        emit ParticipantLeavedAlliance(allianceNumber, bytes32(aliceOrgId));
 
         manager.leaveAlliance(allianceNumber, bytes32(aliceOrgId));
         vm.stopPrank();
@@ -206,7 +206,7 @@ contract OrgsManagerTest is IOrgsManagerEvents, Test {
         // leave alliance
         // check event emission
         vm.expectEmit(address(manager));
-        emit LeavedAlliance(allianceNumber, bytes32(aliceId));
+        emit ParticipantLeavedAlliance(allianceNumber, bytes32(aliceId));
 
         manager.leaveAlliance(allianceNumber, bytes32(aliceId));
         vm.stopPrank();

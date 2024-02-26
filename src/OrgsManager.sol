@@ -60,7 +60,7 @@ contract OrgsManager is IOrgsManagerEvents, Organization, Member, Alliance {
         ) {
             revert NonExistentParticipant(_participantId);
         }
-        emit JoinedAlliance(_allianceNumber, _participantId);
+        emit ParticipantJoinedAlliance(_allianceNumber, _participantId);
     }
 
     function leaveAlliance(
@@ -72,7 +72,7 @@ contract OrgsManager is IOrgsManagerEvents, Organization, Member, Alliance {
         ) {
             revert NonExistentParticipant(_participantId);
         }
-        emit LeavedAlliance(_allianceNumber, _participantId);
+        emit ParticipantLeavedAlliance(_allianceNumber, _participantId);
     }
 
     function addMemberDelegator(
