@@ -1,9 +1,19 @@
-type Member @entity(immutable: false) {
+
+# testing the subgraph matchstick 
+
+interface IParticipant {
+  id: ID! # bytes32
+  name: String! # string
+  alliance: Alliance
+}
+
+type Member implements IParticipant @entity(immutable: false) {
   id: ID! # bytes32
   name: String! # string
   adminAddr: Bytes! # address
   organization: [MemberOrganization!]! @derivedFrom(field: "member")  
   delegator: Delegator
+  alliance: Alliance
 }
 
 type Delegator @entity(immutable: false) {
@@ -12,7 +22,7 @@ type Delegator @entity(immutable: false) {
   member: Member! 
 }
 
-type Organization @entity(immutable: false) {
+type Organization implements IParticipant @entity(inmutable: true) {
   id: ID! # bytes32
   name: String! # string
   owner: Bytes! # address
@@ -30,5 +40,5 @@ type MemberOrganization @entity(immutable: false){
 
 type Alliance @entity(immutable: false) {
   id: ID! # bytes32
-  organizations: [Organization!]! @derivedFrom(field: "alliance")
+  participant: [IParticipant!]! @derivedFrom(field: "alliance")
 }

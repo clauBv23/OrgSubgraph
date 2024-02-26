@@ -133,7 +133,7 @@
         "internalType": "uint256"
       },
       {
-        "name": "_orgId",
+        "name": "_participantId",
         "type": "bytes32",
         "internalType": "bytes32"
       }
@@ -169,7 +169,7 @@
         "internalType": "uint256"
       },
       {
-        "name": "_orgId",
+        "name": "_participantId",
         "type": "bytes32",
         "internalType": "bytes32"
       }
@@ -441,7 +441,7 @@
   },
   {
     "type": "event",
-    "name": "OrganizationJoinedAlliance",
+    "name": "ParticipantJoinedAlliance",
     "inputs": [
       {
         "name": "allianceNumber",
@@ -450,7 +450,7 @@
         "internalType": "uint256"
       },
       {
-        "name": "orgId",
+        "name": "participantId",
         "type": "bytes32",
         "indexed": false,
         "internalType": "bytes32"
@@ -460,7 +460,7 @@
   },
   {
     "type": "event",
-    "name": "OrganizationLeavedAlliance",
+    "name": "ParticipantLeavedAlliance",
     "inputs": [
       {
         "name": "allianceNumber",
@@ -469,7 +469,7 @@
         "internalType": "uint256"
       },
       {
-        "name": "orgId",
+        "name": "participantId",
         "type": "bytes32",
         "indexed": false,
         "internalType": "bytes32"
@@ -530,6 +530,17 @@
     "inputs": [
       {
         "name": "orgId",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "NonExistentParticipant",
+    "inputs": [
+      {
+        "name": "participantId",
         "type": "bytes32",
         "internalType": "bytes32"
       }

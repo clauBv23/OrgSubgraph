@@ -10,9 +10,9 @@ dataSources:
     name: OrgManager
     network: sepolia
     source:
-      address: "0xC3A5cF24584d3a06360285B88a8f5582A1FC1158"
+      address: "0xbC925291bb691497beb1C3248aE3C163c9A7d333"
       abi: OrgManager
-      startBlock: 5362520
+      startBlock: 5368993
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -39,10 +39,10 @@ dataSources:
           handler: handleOrganizationCreated
         - event: MemberDelegatorAdded(bytes32,address)
           handler: handleMemberDelegatorAdded
-        - event: OrganizationJoinedAlliance(uint256,bytes32)
-          handler: handleOrganizationJoinedAlliance
-        - event: OrganizationLeavedAlliance(uint256,bytes32)
-          handler: handleOrganizationLeavedAlliance
+        - event: ParticipantJoinedAlliance(uint256,bytes32)
+          handler: handleParticipantJoinedAlliance
+        - event: ParticipantLeavedAlliance(uint256,bytes32)
+          handler: handleParticipantLeavedAlliance
         - event: AllianceCreated(uint256)
           handler: handleAllianceCreated
       file: OrgManager/OrgManager.wasm

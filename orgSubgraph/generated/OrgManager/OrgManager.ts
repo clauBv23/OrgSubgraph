@@ -146,16 +146,16 @@ export class OrganizationCreated__Params {
   }
 }
 
-export class OrganizationJoinedAlliance extends ethereum.Event {
-  get params(): OrganizationJoinedAlliance__Params {
-    return new OrganizationJoinedAlliance__Params(this);
+export class ParticipantJoinedAlliance extends ethereum.Event {
+  get params(): ParticipantJoinedAlliance__Params {
+    return new ParticipantJoinedAlliance__Params(this);
   }
 }
 
-export class OrganizationJoinedAlliance__Params {
-  _event: OrganizationJoinedAlliance;
+export class ParticipantJoinedAlliance__Params {
+  _event: ParticipantJoinedAlliance;
 
-  constructor(event: OrganizationJoinedAlliance) {
+  constructor(event: ParticipantJoinedAlliance) {
     this._event = event;
   }
 
@@ -163,21 +163,21 @@ export class OrganizationJoinedAlliance__Params {
     return this._event.parameters[0].value.toBigInt();
   }
 
-  get orgId(): Bytes {
+  get participantId(): Bytes {
     return this._event.parameters[1].value.toBytes();
   }
 }
 
-export class OrganizationLeavedAlliance extends ethereum.Event {
-  get params(): OrganizationLeavedAlliance__Params {
-    return new OrganizationLeavedAlliance__Params(this);
+export class ParticipantLeavedAlliance extends ethereum.Event {
+  get params(): ParticipantLeavedAlliance__Params {
+    return new ParticipantLeavedAlliance__Params(this);
   }
 }
 
-export class OrganizationLeavedAlliance__Params {
-  _event: OrganizationLeavedAlliance;
+export class ParticipantLeavedAlliance__Params {
+  _event: ParticipantLeavedAlliance;
 
-  constructor(event: OrganizationLeavedAlliance) {
+  constructor(event: ParticipantLeavedAlliance) {
     this._event = event;
   }
 
@@ -185,7 +185,7 @@ export class OrganizationLeavedAlliance__Params {
     return this._event.parameters[0].value.toBigInt();
   }
 
-  get orgId(): Bytes {
+  get participantId(): Bytes {
     return this._event.parameters[1].value.toBytes();
   }
 }
@@ -621,7 +621,7 @@ export class JoinAllianceCall__Inputs {
     return this._call.inputValues[0].value.toBigInt();
   }
 
-  get _orgId(): Bytes {
+  get _participantId(): Bytes {
     return this._call.inputValues[1].value.toBytes();
   }
 }
@@ -689,7 +689,7 @@ export class LeaveAllianceCall__Inputs {
     return this._call.inputValues[0].value.toBigInt();
   }
 
-  get _orgId(): Bytes {
+  get _participantId(): Bytes {
     return this._call.inputValues[1].value.toBytes();
   }
 }

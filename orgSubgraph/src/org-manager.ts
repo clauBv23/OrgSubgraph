@@ -3,8 +3,8 @@ import {
   MemberLeavedOrganization as MemberLeavedOrganizationEvent,
   VotingPowerSetToMember as VotingPowerSetToMemberEvent,
   MemberDelegatorAdded as MemberDelegatorAddedEvent,
-  OrganizationJoinedAlliance as OrganizationJoinedAllianceEvent,
-  OrganizationLeavedAlliance as OrganizationLeavedAllianceEvent,
+  ParticipantJoinedAlliance as ParticipantJoinedAllianceEvent,
+  ParticipantLeavedAlliance as ParticipantLeavedAllianceEvent,
   MemberCreated as MemberCreatedEvent,
   OrganizationCreated as OrganizationCreatedEvent,
   AllianceCreated as AllianceCreatedEvent
@@ -84,26 +84,41 @@ export function handleMemberDelegatorAdded(
   delegator.save()
 }
 
-
-
-export function handleOrganizationJoinedAlliance(
-  event: OrganizationJoinedAllianceEvent
+export function handleParticipantJoinedAlliance(
+  event: ParticipantJoinedAllianceEvent
 ): void {
-  let organization = Organization.load(event.params.orgId.toString())
+  // let participant = IParticipant.load(event.params.participantId.toString())
+  let participantMember = Member.load(event.params.participantId.toString())
   let alliance = Alliance.load(event.params.allianceNumber.toString())
-  if (organization != null && alliance != null) {
-    organization.alliance = alliance.id
-    organization.save()
+
+  if (participantMember != null && alliance != null) {
+    participantMember.alliance = alliance.id
+    participantMember.save()
+  }
+  else{
+    let participantOrganization = Organization.load(event.params.participantId.toString())
+    if (participantOrganization != null && alliance != null) {
+      participantOrganization.alliance = alliance.id
+      participantOrganization.save()
+    }
   }
 }
 
-export function handleOrganizationLeavedAlliance(
-  event: OrganizationLeavedAllianceEvent
+export function handleParticipantLeavedAlliance(
+  event: ParticipantLeavedAllianceEvent
 ): void {
-  let organization = Organization.load(event.params.orgId.toString())
+  let participantMember = Member.load(event.params.participantId.toString())
   let alliance = Alliance.load(event.params.allianceNumber.toString())
-  if (organization != null && alliance != null) {
-    organization.alliance = null
-    organization.save()
+
+  if (participantMember != null && alliance != null) {
+    participantMember.alliance = null
+    participantMember.save()
+  }
+  else{
+    let participantOrganization = Organization.load(event.params.participantId.toString())
+    if (participantOrganization != null && alliance != null) {
+      participantOrganization.alliance = null
+      participantOrganization.save()
+    }
   }
 }

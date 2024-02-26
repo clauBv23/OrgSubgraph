@@ -100,6 +100,23 @@ export class Member extends Entity {
       this.set("delegator", Value.fromString(<string>value));
     }
   }
+
+  get alliance(): string | null {
+    let value = this.get("alliance");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set alliance(value: string | null) {
+    if (!value) {
+      this.unset("alliance");
+    } else {
+      this.set("alliance", Value.fromString(<string>value));
+    }
+  }
 }
 
 export class Delegator extends Entity {
@@ -386,14 +403,6 @@ export class Alliance extends Entity {
   set id(value: string) {
     this.set("id", Value.fromString(value));
   }
-
-  get organizations(): OrganizationLoader {
-    return new OrganizationLoader(
-      "Alliance",
-      this.get("id")!.toString(),
-      "organizations",
-    );
-  }
 }
 
 export class MemberOrganizationLoader extends Entity {
@@ -411,23 +420,5 @@ export class MemberOrganizationLoader extends Entity {
   load(): MemberOrganization[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<MemberOrganization[]>(value);
-  }
-}
-
-export class OrganizationLoader extends Entity {
-  _entity: string;
-  _field: string;
-  _id: string;
-
-  constructor(entity: string, id: string, field: string) {
-    super();
-    this._entity = entity;
-    this._id = id;
-    this._field = field;
-  }
-
-  load(): Organization[] {
-    let value = store.loadRelated(this._entity, this._id, this._field);
-    return changetype<Organization[]>(value);
   }
 }
