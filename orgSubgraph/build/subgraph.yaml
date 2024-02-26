@@ -18,9 +18,11 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - MemberAddedToOrganization
-        - MemberCreated
-        - OrganizationCreated
+        - Member
+        - Delegator
+        - Organization
+        - MemberOrganization
+        - Alliance
       abis:
         - name: OrgManager
           file: OrgManager/abis/OrgManager.json
