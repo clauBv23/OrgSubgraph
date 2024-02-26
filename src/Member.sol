@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {Member} from "./Structs.sol";
+import {MemberData} from "./Structs.sol";
 import {IOrgsManagerEvents} from "./interfaces/IOrgsManagerEvents.sol";
 
-contract MemberCtr is IOrgsManagerEvents {
-    mapping(bytes32 memberId => Member member) public members;
+contract Member is IOrgsManagerEvents {
+    mapping(bytes32 memberId => MemberData member) public members;
 
     function createMember(bytes32 _id, string calldata _name) external {
-        members[_id] = Member(_id, _name, msg.sender, address(0));
+        members[_id] = MemberData(_id, _name, msg.sender, address(0));
         emit MemberCreated(_id, _name, msg.sender);
     }
 

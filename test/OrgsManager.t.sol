@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 import {Test, console2} from "forge-std/Test.sol";
 import {OrgsManager} from "../src/OrgsManager.sol";
-import {Organization, Member} from "../src/Structs.sol";
+import {OrganizationData, MemberData} from "../src/Structs.sol";
 import {IOrgsManagerEvents} from "../src/interfaces/IOrgsManagerEvents.sol";
 
 contract OrgsManagerTest is IOrgsManagerEvents, Test {
@@ -33,7 +33,7 @@ contract OrgsManagerTest is IOrgsManagerEvents, Test {
 
         manager.createOrganization(bytes32(orgId), "Test Org");
 
-        Organization memory org;
+        OrganizationData memory org;
         (org.id, org.name, org.owner) = manager.organizations(bytes32(orgId));
         assertEq(org.id, bytes32(orgId));
     }
@@ -47,7 +47,7 @@ contract OrgsManagerTest is IOrgsManagerEvents, Test {
 
         manager.createMember(bytes32(memberId), "Test Member");
 
-        Member memory member;
+        MemberData memory member;
         (
             member.id,
             member.name,

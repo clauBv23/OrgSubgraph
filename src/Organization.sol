@@ -1,14 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {Organization} from "./Structs.sol";
+import {OrganizationData} from "./Structs.sol";
 import {IOrgsManagerEvents} from "./interfaces/IOrgsManagerEvents.sol";
 
-contract OrganizationCtr is IOrgsManagerEvents {
-    mapping(bytes32 orgId => Organization organization) public organizations;
+contract Organization is IOrgsManagerEvents {
+    mapping(bytes32 orgId => OrganizationData organization)
+        public organizations;
 
     function createOrganization(bytes32 _id, string calldata _name) external {
-        organizations[_id] = Organization(_id, _name, msg.sender);
+        organizations[_id] = OrganizationData(_id, _name, msg.sender);
         emit OrganizationCreated(_id, _name, msg.sender);
     }
 

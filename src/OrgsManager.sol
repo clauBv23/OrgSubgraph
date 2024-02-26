@@ -1,20 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {Organization, Member} from "./Structs.sol";
-
-import {MemberCtr} from "./MemberCtr.sol";
-import {AllianceCtr} from "./AllianceCtr.sol";
-import {OrganizationCtr} from "./OrganizationCtr.sol";
+import {Member} from "./Member.sol";
+import {Alliance} from "./Alliance.sol";
+import {Organization} from "./Organization.sol";
 
 import {IOrgsManagerEvents} from "./interfaces/IOrgsManagerEvents.sol";
 
-contract OrgsManager is
-    IOrgsManagerEvents,
-    OrganizationCtr,
-    MemberCtr,
-    AllianceCtr
-{
+contract OrgsManager is IOrgsManagerEvents, Organization, Member, Alliance {
     error NonExistentOrganization(bytes32 orgId);
     error NonExistentMember(bytes32 memberId);
     error NonExistentAlliance(uint256 allianceNumber);
