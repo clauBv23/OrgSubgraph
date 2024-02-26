@@ -37,6 +37,9 @@ contract PopulateOrgsManager is Script {
         // create alliances and join organizations
         _createAllianceAndJoinOrganizations();
 
+        // join members to alliances
+        _joinMembersToAlliances();
+
         // define delegator to members
         _defineDelegatorToMember();
     }
@@ -108,7 +111,6 @@ contract PopulateOrgsManager is Script {
         vm.stopBroadcast();
 
         // set voting power to Alice, and Bob in Charlie's org
-        //!!!!!!! it is wrong in the original script
         vm.startBroadcast(charlie);
         manager.setVotingPowerToMember(
             bytes32(charlieOrgId),
@@ -146,6 +148,22 @@ contract PopulateOrgsManager is Script {
         vm.stopBroadcast();
     }
 
+    function _joinMembersToAlliances() internal {
+        // join bob and alice to alliance2
+        vm.startBroadcast(bob);
+        manager.joinAlliance(alliance2Number, bytes32(bobId));
+        vm.stopBroadcast();
+
+        vm.startBroadcast(alice);
+        manager.joinAlliance(alliance2Number, bytes32(aliceId));
+        vm.stopBroadcast();
+
+        // join charlie to alliance1
+        vm.startBroadcast(charlie);
+        manager.joinAlliance(alliance1Number, bytes32(charlieId));
+        vm.stopBroadcast();
+    }
+
     function _defineDelegatorToMember() internal {
         // define the script address as alice bob and charlie's delegator
         vm.startBroadcast(alice);
@@ -173,6 +191,11 @@ contract PopulateOrgsManager is Script {
         vm.startBroadcast(alice);
         // make alice's org leave alliance1
         manager.leaveAlliance(alliance1Number, bytes32(aliceOrgId));
+        vm.stopBroadcast();
+
+        vm.startBroadcast(bob);
+        // make bob leave alliance2
+        manager.leaveAlliance(alliance2Number, bytes32(bobId));
         vm.stopBroadcast();
     }
 }
