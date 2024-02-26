@@ -144,23 +144,39 @@ contract OrgsManagerTest is IOrgsManagerEvents, Test {
         manager.createAlliance(allianceNumber);
     }
 
-    function test_joinAlliance() public {
+    function test_joinAlliance_Organization() public {
         // create alliance
         manager.createAlliance(allianceNumber);
 
-        // create alice's org and join created alliance
+        // create alice's org and Alice and join created alliance
         vm.startPrank(alice);
         manager.createOrganization(bytes32(aliceOrgId), "Alice's Org");
 
         // check event emission
         vm.expectEmit(address(manager));
-        emit OrganizationJoinedAlliance(allianceNumber, bytes32(aliceOrgId));
+        emit JoinedAlliance(allianceNumber, bytes32(aliceOrgId));
 
         manager.joinAlliance(allianceNumber, bytes32(aliceOrgId));
         vm.stopPrank();
     }
 
-    function test_leaveAlliance() public {
+    function test_joinAlliance_Member() public {
+        // create alliance
+        manager.createAlliance(allianceNumber);
+
+        // create alice's org and Alice and join created alliance
+        vm.startPrank(alice);
+        manager.createMember(bytes32(aliceId), "Alice");
+
+        // check event emission
+        vm.expectEmit(address(manager));
+        emit JoinedAlliance(allianceNumber, bytes32(aliceId));
+
+        manager.joinAlliance(allianceNumber, bytes32(aliceId));
+        vm.stopPrank();
+    }
+
+    function test_leaveAlliance_Organization() public {
         // create alliance
         manager.createAlliance(allianceNumber);
 
@@ -172,9 +188,27 @@ contract OrgsManagerTest is IOrgsManagerEvents, Test {
         // leave alliance
         // check event emission
         vm.expectEmit(address(manager));
-        emit OrganizationLeavedAlliance(allianceNumber, bytes32(aliceOrgId));
+        emit LeavedAlliance(allianceNumber, bytes32(aliceOrgId));
 
         manager.leaveAlliance(allianceNumber, bytes32(aliceOrgId));
+        vm.stopPrank();
+    }
+
+    function test_leaveAlliance_Member() public {
+        // create alliance
+        manager.createAlliance(allianceNumber);
+
+        // create alice's org and join created alliance
+        vm.startPrank(alice);
+        manager.createMember(bytes32(aliceId), "Alice");
+        manager.joinAlliance(allianceNumber, bytes32(aliceId));
+
+        // leave alliance
+        // check event emission
+        vm.expectEmit(address(manager));
+        emit LeavedAlliance(allianceNumber, bytes32(aliceId));
+
+        manager.leaveAlliance(allianceNumber, bytes32(aliceId));
         vm.stopPrank();
     }
 

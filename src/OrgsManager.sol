@@ -19,6 +19,7 @@ contract OrgsManager is
     error NonExistentMember(bytes32 memberId);
     error NonExistentAlliance(uint256 allianceNumber);
     error PermissionDenied(address caller);
+    error NonExistentParticipant(bytes32 participantId);
 
     function joinOrganization(
         bytes32 _orgId,
@@ -59,26 +60,26 @@ contract OrgsManager is
 
     function joinAlliance(
         uint256 _allianceNumber,
-        bytes32 _orgId
-    )
-        external
-        existentAlliance(_allianceNumber)
-        existentOrganization(_orgId)
-        onlyOrganizationOwner(_orgId)
-    {
-        emit OrganizationJoinedAlliance(_allianceNumber, _orgId);
+        bytes32 _participantId
+    ) external existentAlliance(_allianceNumber) {
+        if (
+            !organizationExists(_participantId) && !memberExists(_participantId)
+        ) {
+            revert NonExistentParticipant(_participantId);
+        }
+        emit JoinedAlliance(_allianceNumber, _participantId);
     }
 
     function leaveAlliance(
         uint256 _allianceNumber,
-        bytes32 _orgId
-    )
-        external
-        existentAlliance(_allianceNumber)
-        existentOrganization(_orgId)
-        onlyOrganizationOwner(_orgId)
-    {
-        emit OrganizationLeavedAlliance(_allianceNumber, _orgId);
+        bytes32 _participantId
+    ) external existentAlliance(_allianceNumber) {
+        if (
+            !organizationExists(_participantId) && !memberExists(_participantId)
+        ) {
+            revert NonExistentParticipant(_participantId);
+        }
+        emit LeavedAlliance(_allianceNumber, _participantId);
     }
 
     function addMemberDelegator(
