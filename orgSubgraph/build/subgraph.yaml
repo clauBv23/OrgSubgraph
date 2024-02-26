@@ -10,9 +10,9 @@ dataSources:
     name: OrgManager
     network: sepolia
     source:
-      address: "0xbC925291bb691497beb1C3248aE3C163c9A7d333"
+      address: "0x173C380F2F9e12FF676D8b7FbF4FBa9027a8fE3F"
       abi: OrgManager
-      startBlock: 5368993
+      startBlock: 5369423
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
