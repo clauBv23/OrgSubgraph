@@ -15,6 +15,12 @@ contract IOrgsManagerEvents {
     event MemberLeavedOrganization(bytes32 orgId, bytes32 memberId);
 
     event AllianceCreated(uint256 allianceNumber);
-    event ParticipantJoinedAlliance(uint256 allianceNumber, bytes32 orgId);
-    event ParticipantLeavedAlliance(uint256 allianceNumber, bytes32 orgId);
+    event ParticipantJoinedAlliance(
+        uint256 allianceNumber,
+        bytes32 participantId
+    );
+    event ParticipantLeavedAlliance(
+        uint256 allianceNumber,
+        bytes32 participantId
+    );
 }
