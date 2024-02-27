@@ -2,7 +2,9 @@
 pragma solidity ^0.8.13;
 
 import {Script, console2, console} from "forge-std/Script.sol";
+
 import {OrgsManager} from "../src/OrgsManager.sol";
+import {MemberDelegator} from "../src/MemberDelegator.sol";
 
 contract PopulateOrgsManager is Script {
     OrgsManager manager;
@@ -42,6 +44,9 @@ contract PopulateOrgsManager is Script {
 
         // define delegator to members
         _defineDelegatorToMember();
+
+        // set delegator names and make calls
+        _setDelegatorNamesAndMakeCalls();
     }
 
     function _createMembersAndOrgs() internal {
@@ -167,16 +172,44 @@ contract PopulateOrgsManager is Script {
     function _defineDelegatorToMember() internal {
         // define the script address as alice bob and charlie's delegator
         vm.startBroadcast(alice);
-        manager.addMemberDelegator(bytes32(aliceId), address(this));
+        manager.addMemberDelegator(bytes32(aliceId));
         vm.stopBroadcast();
 
         vm.startBroadcast(bob);
-        manager.addMemberDelegator(bytes32(bobId), address(this));
-
+        manager.addMemberDelegator(bytes32(bobId));
         vm.stopBroadcast();
 
         vm.startBroadcast(charlie);
-        manager.addMemberDelegator(bytes32(charlieId), address(this));
+        manager.addMemberDelegator(bytes32(charlieId));
+        vm.stopBroadcast();
+    }
+
+    function _setDelegatorNamesAndMakeCalls() internal {
+        // get delegator addresses
+        (, , , address aliceDelegator) = manager.members(bytes32(aliceId));
+        (, , , address bobDelegator) = manager.members(bytes32(bobId));
+        (, , , address charlieDelegator) = manager.members(bytes32(charlieId));
+
+        // set names to the delegator
+        MemberDelegator(aliceDelegator).setDelegatorName("Alice's Delegator");
+        MemberDelegator(bobDelegator).setDelegatorName("Bob's Delegator");
+        MemberDelegator(charlieDelegator).setDelegatorName(
+            "Charlie's Delegator"
+        );
+
+        // alice call bob's delegator
+        vm.startBroadcast(alice);
+        MemberDelegator(bobDelegator).callDelegator();
+        vm.stopBroadcast();
+
+        // bob call charlie's delegator
+        vm.startBroadcast(bob);
+        MemberDelegator(aliceDelegator).callDelegator();
+        vm.stopBroadcast();
+
+        // charlie call alice's delegator
+        vm.startBroadcast(charlie);
+        MemberDelegator(charlieDelegator).callDelegator();
         vm.stopBroadcast();
     }
 
