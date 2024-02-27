@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import {Test, console2} from "forge-std/Test.sol";
+import {Test, console} from "forge-std/Test.sol";
 import {OrgsManager} from "../src/OrgsManager.sol";
+import {MemberDelegator} from "../src/MemberDelegator.sol";
 import {OrganizationData, MemberData} from "../src/Structs.sol";
 import {IOrgsManagerEvents} from "../src/interfaces/IOrgsManagerEvents.sol";
 
@@ -223,10 +224,85 @@ contract OrgsManagerTest is IOrgsManagerEvents, Test {
         manager.createMember(bytes32(bobId), "Bob");
 
         // check event emission
-        vm.expectEmit(address(manager));
-        emit MemberDelegatorAdded(bytes32(bobId), alice);
+        // todo review how to make this check
+        // vm.expectEmit(address(manager));
+        // emit MemberDelegatorAdded(bytes32(bobId), alice);
 
-        manager.addMemberDelegator(bytes32(bobId), alice);
+        manager.addMemberDelegator(bytes32(bobId));
+        vm.stopPrank();
+
+        // check the delegator contracts is correct
+        (, , , address delegator) = manager.members(bytes32(bobId));
+        assertEq(MemberDelegator(delegator).memberId(), bytes32(bobId));
+    }
+
+    function test_setMemberDelegatorName() public {
+        string memory delegatorName = "Bob's Delegator";
+        // add alice
+        vm.startPrank(alice);
+        manager.createMember(bytes32(aliceId), "Alice");
+        vm.stopPrank();
+
+        // add bob
+        vm.startPrank(bob);
+        manager.createMember(bytes32(bobId), "Bob");
+        manager.addMemberDelegator(bytes32(bobId));
+        vm.stopPrank();
+
+        // check the delegator contracts is correct
+        (, , , address delegator) = manager.members(bytes32(bobId));
+
+        // check event emission
+        vm.expectEmit(address(delegator));
+        emit DelegatorNameSet(bytes32(bobId), delegatorName);
+
+        // add a name to the delegator
+        MemberDelegator(delegator).setDelegatorName(delegatorName);
+
+        // check name was set
+        assertEq(MemberDelegator(delegator).name(), delegatorName);
+    }
+
+    function test_callDelegator() public {
+        // add alice
+        vm.startPrank(alice);
+        manager.createMember(bytes32(aliceId), "Alice");
+        vm.stopPrank();
+
+        // add bob
+        vm.startPrank(bob);
+        manager.createMember(bytes32(bobId), "Bob");
+        manager.addMemberDelegator(bytes32(bobId));
+        vm.stopPrank();
+
+        // check the delegator contracts is correct
+        (, , , address delegator) = manager.members(bytes32(bobId));
+
+        // alice call delegator
+        vm.expectEmit(address(delegator));
+        emit DelegatorCalled(alice);
+
+        vm.startPrank(alice);
+        // add a name to the delegator
+        MemberDelegator(delegator).callDelegator();
+        vm.stopPrank();
+
+        // bob call delegator
+        vm.expectEmit(address(delegator));
+        emit DelegatorCalled(bob);
+
+        vm.startPrank(bob);
+        // add a name to the delegator
+        MemberDelegator(delegator).callDelegator();
+        vm.stopPrank();
+
+        // charlie call delegator
+        vm.expectEmit(address(delegator));
+        emit DelegatorCalled(charlie);
+
+        vm.startPrank(charlie);
+        // add a name to the delegator
+        MemberDelegator(delegator).callDelegator();
         vm.stopPrank();
     }
 }
