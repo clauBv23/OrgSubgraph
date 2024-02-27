@@ -9,6 +9,8 @@ contract IOrgsManagerEvents {
         bytes32 memberId,
         uint256 votingPower
     );
+    event DelegatorNameSet(bytes32 delegatorId, string name);
+    event DelegatorCalled(address caller);
 
     event OrganizationCreated(bytes32 orgId, string name, address owner);
     event MemberJoinedOrganization(bytes32 orgId, bytes32 memberId);

@@ -76,10 +76,9 @@ contract OrgsManager is IOrgsManagerEvents, Organization, Member, Alliance {
     }
 
     function addMemberDelegator(
-        bytes32 _memberId,
-        address _delegatorAddr
+        bytes32 _memberId
     ) external existentMember(_memberId) onlyMemberAdmin(_memberId) {
-        _addDelegatorToMember(_memberId, _delegatorAddr);
+        _addDelegatorToMember(_memberId);
     }
 
     modifier existentAlliance(uint256 _allianceNumber) {
@@ -137,3 +136,6 @@ contract OrgsManager is IOrgsManagerEvents, Organization, Member, Alliance {
         }
     }
 }
+
+// todo
+// add a factory in the contract to use templates

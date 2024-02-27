@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {MemberData} from "./Structs.sol";
+import {MemberDelegator} from "./MemberDelegator.sol";
 import {IOrgsManagerEvents} from "./interfaces/IOrgsManagerEvents.sol";
 
 contract Member is IOrgsManagerEvents {
@@ -16,13 +17,12 @@ contract Member is IOrgsManagerEvents {
         return members[_id].adminAddr != address(0);
     }
 
-    function _addDelegatorToMember(
-        bytes32 _id,
-        address _delegatorAddr
-    ) internal {
+    function _addDelegatorToMember(bytes32 _id) internal {
         // check permissions and existence before calling this function
-        members[_id].delegatorAddr = _delegatorAddr;
-        emit MemberDelegatorAdded(_id, _delegatorAddr);
+        MemberDelegator _delegator = new MemberDelegator(_id);
+        members[_id].delegatorAddr = address(_delegator);
+
+        emit MemberDelegatorAdded(_id, address(_delegator));
     }
 
     function isMemberAdmin(bytes32 _id) public view returns (bool) {
