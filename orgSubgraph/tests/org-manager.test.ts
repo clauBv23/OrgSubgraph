@@ -4,51 +4,128 @@ import {
   test,
   clearStore,
   beforeAll,
-  afterAll
+  afterAll,
+  logStore, 
+  log
 } from "matchstick-as/assembly/index"
-import { Bytes } from "@graphprotocol/graph-ts"
-import { MemberAddedToOrganization } from "../generated/schema"
-import { MemberAddedToOrganization as MemberAddedToOrganizationEvent } from "../generated/OrgManager/OrgManager"
-import { handleMemberAddedToOrganization } from "../src/org-manager"
-import { createMemberAddedToOrganizationEvent } from "./org-manager-utils"
+import { BigInt, Bytes } from "@graphprotocol/graph-ts"
 
-// Tests structure (matchstick-as >=0.5.0)
-// https://thegraph.com/docs/en/developer/matchstick/#tests-structure-0-5-0
+import { 
+  handleMemberCreated, 
+  handleOrganizationCreated, 
+  handleAllianceCreated, 
+  handleMemberJoinedOrganization, 
+  handleMemberLeavedOrganization, 
+  handleVotingPowerSetToMember, 
+  handleMemberDelegatorAdded, 
+  handleParticipantJoinedAlliance, 
+  handleParticipantLeavedAlliance 
+} from "../src/org-manager"
+import { 
+  createAllianceCreatedEvent, 
+  createMemberCreatedEvent, 
+  createOrganizationCreatedEvent,
+  createMemberDelegatorAddedEvent
+} from "./org-manager-utils"
+
 
 describe("Describe entity assertions", () => {
-  beforeAll(() => {
-    let orgId = Bytes.fromI32(1234567890)
-    let memberId = Bytes.fromI32(1234567890)
-    let newMemberAddedToOrganizationEvent =
-      createMemberAddedToOrganizationEvent(orgId, memberId)
-    handleMemberAddedToOrganization(newMemberAddedToOrganizationEvent)
-  })
 
   afterAll(() => {
     clearStore()
   })
 
-  // For more test scenarios, see:
-  // https://thegraph.com/docs/en/developer/matchstick/#write-a-unit-test
+  test("Member created and stored", () => {
+    let id = Bytes.fromI32(100)
+    let name = "alice"
+    let adminAddr = "0xa16081f360e3847006db660bae1c6d1b2e17ec2a"
 
-  test("MemberAddedToOrganization created and stored", () => {
-    assert.entityCount("MemberAddedToOrganization", 1)
+    let newMemberCreatedEvent = createMemberCreatedEvent(id, name, adminAddr)
+    handleMemberCreated(newMemberCreatedEvent)
 
-    // 0xa16081f360e3847006db660bae1c6d1b2e17ec2a is the default address used in newMockEvent() function
     assert.fieldEquals(
-      "MemberAddedToOrganization",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
-      "orgId",
-      "1234567890"
+      "Member",
+      id.toString(),
+      "name",
+      name
     )
     assert.fieldEquals(
-      "MemberAddedToOrganization",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
-      "memberId",
-      "1234567890"
+      "Member",
+      id.toString(),
+      "adminAddr",
+      adminAddr
+    )
+  })
+
+  test("Organization created and stored", () => {
+    let id = Bytes.fromI32(10)
+    let name = "Alice's Org"
+    let owner = "0xa16081f360e3847006db660bae1c6d1b2e17ec2a"
+
+    let newOrganizationCreatedEvent = createOrganizationCreatedEvent(id, name, owner)
+    handleOrganizationCreated(newOrganizationCreatedEvent)
+
+    assert.fieldEquals(
+      "Organization",
+      id.toString(),
+      "name",
+      name
+    )
+    assert.fieldEquals(
+      "Organization",
+      id.toString(),
+      "owner",
+      owner
+    )
+  })
+
+  test("Alliance created and stored", () => {
+    let allianceNumber = BigInt.fromI32(1)
+
+    let newAllianceCreatedEvent = createAllianceCreatedEvent(allianceNumber)
+    handleAllianceCreated(newAllianceCreatedEvent)
+
+    assert.fieldEquals(
+      "Alliance",
+      allianceNumber.toString(),
+      "id",
+      allianceNumber.toString()
+    )
+  })
+
+  test("Member Delegator created and stored and member modified", () => {
+    let delegatorAddress = "0xa16081f360e3847006db660bae1c6d1b2e17ec2a"
+    let aliceId = Bytes.fromI32(100)
+
+    let newMemberDelegatorAddedEvent = createMemberDelegatorAddedEvent(aliceId, delegatorAddress)
+    handleMemberDelegatorAdded(newMemberDelegatorAddedEvent)
+
+    assert.fieldEquals(
+      "Delegator",
+      aliceId.toString(),
+      "id",
+      aliceId.toString()
     )
 
-    // More assert options:
-    // https://thegraph.com/docs/en/developer/matchstick/#asserts
+    assert.fieldEquals(
+      "Delegator",
+      aliceId.toString(),
+      "member",
+      aliceId.toString()
+    )
+    assert.fieldEquals(
+      "Delegator",
+      aliceId.toString(),
+      "address",
+      delegatorAddress
+    )
+
+    // check delegator is added in the member
+    assert.fieldEquals(
+      "Member",
+      aliceId.toString(),
+      "delegator",
+      aliceId.toString()
+    )
   })
 })
