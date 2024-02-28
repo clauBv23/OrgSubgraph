@@ -10,9 +10,9 @@ dataSources:
     name: OrgManager
     network: sepolia
     source:
-      address: "0x173C380F2F9e12FF676D8b7FbF4FBa9027a8fE3F"
+      address: "0xABDD2110E0d2a50a87fa4b3c52367B6A7b79D173"
       abi: OrgManager
-      startBlock: 5369423
+      startBlock: 5379932
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -54,7 +54,7 @@ templates:
       abi: MemberDelegator
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: templates/Delegator/Delegator.wasm
       entities:
