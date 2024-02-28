@@ -25,7 +25,7 @@ test-deploy-mumbay:
 	forge script script/OrgsManager.s.sol --rpc-url $(MUMBAI_RPC_URL) --private-key $(PRIVATE_KEY) -vvvvv
 
 gen-abi:
-	forge build --silent && jq '.abi' ./out/OrgsManager.sol/OrgsManager.json > ./orgSubgraph/abis/OrgManager.json 
+	forge build --silent && jq '.abi' ./out/OrgsManager.sol/OrgsManager.json > ./orgSubgraph/abis/OrgManager.json && forge build --silent && jq '.abi' ./out/MemberDelegator.sol/MemberDelegator.json > ./orgSubgraph/abis/MemberDelegator.json
 
 test-populate:
 	forge script script/PopulateOrgsManager.s.sol --sig "run(address)" $(add) --rpc-url $(RPC_URL) --private-key $(PRIVATE_KEY)  -vvvvvvv
