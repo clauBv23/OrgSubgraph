@@ -280,7 +280,7 @@ contract OrgsManagerTest is IOrgsManagerEvents, Test {
 
         // alice call delegator
         vm.expectEmit(address(delegator));
-        emit DelegatorCalled(alice);
+        emit DelegatorCalled(bytes32(bobId), alice);
 
         vm.startPrank(alice);
         // add a name to the delegator
@@ -289,7 +289,7 @@ contract OrgsManagerTest is IOrgsManagerEvents, Test {
 
         // bob call delegator
         vm.expectEmit(address(delegator));
-        emit DelegatorCalled(bob);
+        emit DelegatorCalled(bytes32(bobId), bob);
 
         vm.startPrank(bob);
         // add a name to the delegator
@@ -298,7 +298,7 @@ contract OrgsManagerTest is IOrgsManagerEvents, Test {
 
         // charlie call delegator
         vm.expectEmit(address(delegator));
-        emit DelegatorCalled(charlie);
+        emit DelegatorCalled(bytes32(bobId), charlie);
 
         vm.startPrank(charlie);
         // add a name to the delegator

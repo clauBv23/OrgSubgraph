@@ -17,6 +17,6 @@ contract MemberDelegator is IOrgsManagerEvents {
     }
 
     function callDelegator() external {
-        emit DelegatorCalled(msg.sender);
+        emit DelegatorCalled(memberId, msg.sender);
     }
 }
