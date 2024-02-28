@@ -7,11 +7,6 @@
         "name": "_memberId",
         "type": "bytes32",
         "internalType": "bytes32"
-      },
-      {
-        "name": "_delegatorAddr",
-        "type": "address",
-        "internalType": "address"
       }
     ],
     "outputs": [],
@@ -328,6 +323,38 @@
         "type": "uint256",
         "indexed": false,
         "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DelegatorCalled",
+    "inputs": [
+      {
+        "name": "caller",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DelegatorNameSet",
+    "inputs": [
+      {
+        "name": "delegatorId",
+        "type": "bytes32",
+        "indexed": false,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
       }
     ],
     "anonymous": false

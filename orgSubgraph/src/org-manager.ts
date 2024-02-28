@@ -7,17 +7,22 @@ import {
   ParticipantLeavedAlliance as ParticipantLeavedAllianceEvent,
   MemberCreated as MemberCreatedEvent,
   OrganizationCreated as OrganizationCreatedEvent,
-  AllianceCreated as AllianceCreatedEvent
+  AllianceCreated as AllianceCreatedEvent,
+  // DelegatorNameSet as DelegatorNameSetEvent,
+  // DelegatorCalled as DelegatorCalledEvent
 } from "../generated/OrgManager/OrgManager"
 import {
   Member,
   Organization,
   MemberOrganization,
-  Delegator, 
+  Delegator as DelegatorEntity, 
   Alliance
 } from "../generated/schema"
 
-import { store } from '@graphprotocol/graph-ts'
+import { DataSourceContext, store } from '@graphprotocol/graph-ts'
+
+import { Delegator } from '../generated/templates'
+
 
 export function handleMemberCreated(event: MemberCreatedEvent): void {
   let member = new Member(event.params.memberId.toString())
@@ -73,12 +78,19 @@ export function handleVotingPowerSetToMember(
 export function handleMemberDelegatorAdded(
   event: MemberDelegatorAddedEvent
 ): void {
-  let delegator = new Delegator(event.params.memberId.toString())
+  // Start indexing the delegator; `event.params.delegatorAddr` is the
+  // address of the new delegator contract
+  let context = new DataSourceContext()
+  context.setString('id', event.params.memberId.toString())
+  Delegator.createWithContext(event.params.delegatorAddr, context)
+
+  let delegator = new DelegatorEntity(event.params.memberId.toString())
   delegator.address = event.params.delegatorAddr
+  
   let member = Member.load(event.params.memberId.toString())
   if (member != null) {
+    member.delegator = event.params.memberId.toString()
     delegator.member = member.id
-    member.delegator = delegator.id
     member.save()
   }
   delegator.save()

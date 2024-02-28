@@ -12,6 +12,11 @@ import {
   AllianceCreated,
 } from "../generated/OrgManager/OrgManager"
 
+import {
+  DelegatorNameSet,
+  DelegatorCalled
+} from "../generated/templates/Delegator/MemberDelegator"
+
 export function createAllianceCreatedEvent(
   allianceNumber: BigInt,
 ): AllianceCreated {
@@ -173,4 +178,38 @@ export function createParticipantLeavedAllianceEvent(
   )
   
   return participantLeavedEvent
+}
+
+export function createDelegatorNameSetEvent(
+  delegatorId: Bytes,
+  name: string,
+): DelegatorNameSet {
+  let delegatorNameSet = changetype<DelegatorNameSet>(newMockEvent())
+
+  delegatorNameSet.parameters = new Array()
+  delegatorNameSet.parameters.push(
+    new ethereum.EventParam("delegatorId", ethereum.Value.fromFixedBytes(delegatorId))
+  )
+  delegatorNameSet.parameters.push(
+    new ethereum.EventParam("name", ethereum.Value.fromString(name))
+  )
+  
+  return delegatorNameSet
+}
+
+export function createDelegatorCalledEvent(
+  delegatorId: Bytes,
+  caller: string,
+): DelegatorCalled {
+  let delegatorCalled = changetype<DelegatorCalled>(newMockEvent())
+
+  delegatorCalled.parameters = new Array()
+  delegatorCalled.parameters.push(
+    new ethereum.EventParam("delegatorId", ethereum.Value.fromFixedBytes(delegatorId))
+  )
+  delegatorCalled.parameters.push(
+    new ethereum.EventParam("caller", ethereum.Value.fromAddress(Address.fromString(caller)))
+  )
+  
+  return delegatorCalled
 }

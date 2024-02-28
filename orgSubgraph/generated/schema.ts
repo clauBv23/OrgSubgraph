@@ -171,6 +171,23 @@ export class Delegator extends Entity {
     this.set("address", Value.fromBytes(value));
   }
 
+  get name(): string | null {
+    let value = this.get("name");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set name(value: string | null) {
+    if (!value) {
+      this.unset("name");
+    } else {
+      this.set("name", Value.fromString(<string>value));
+    }
+  }
+
   get member(): string {
     let value = this.get("member");
     if (!value || value.kind == ValueKind.NULL) {
@@ -182,6 +199,23 @@ export class Delegator extends Entity {
 
   set member(value: string) {
     this.set("member", Value.fromString(value));
+  }
+
+  get lastCaller(): Bytes | null {
+    let value = this.get("lastCaller");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set lastCaller(value: Bytes | null) {
+    if (!value) {
+      this.unset("lastCaller");
+    } else {
+      this.set("lastCaller", Value.fromBytes(<Bytes>value));
+    }
   }
 }
 

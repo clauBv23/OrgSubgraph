@@ -19,10 +19,12 @@ type Member implements IParticipant @entity(immutable: false) {
 type Delegator @entity(immutable: false) {
   id: ID! # bytes32   `the id is the member id`
   address: Bytes! # address
+  name: String # string
   member: Member! 
+  lastCaller: Bytes # address
 }
 
-type Organization implements IParticipant @entity(inmutable: true) {
+type Organization implements IParticipant @entity(immutable: true) {
   id: ID! # bytes32
   name: String! # string
   owner: Bytes! # address

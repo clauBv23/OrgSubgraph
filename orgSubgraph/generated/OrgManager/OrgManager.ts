@@ -28,6 +28,46 @@ export class AllianceCreated__Params {
   }
 }
 
+export class DelegatorCalled extends ethereum.Event {
+  get params(): DelegatorCalled__Params {
+    return new DelegatorCalled__Params(this);
+  }
+}
+
+export class DelegatorCalled__Params {
+  _event: DelegatorCalled;
+
+  constructor(event: DelegatorCalled) {
+    this._event = event;
+  }
+
+  get caller(): Address {
+    return this._event.parameters[0].value.toAddress();
+  }
+}
+
+export class DelegatorNameSet extends ethereum.Event {
+  get params(): DelegatorNameSet__Params {
+    return new DelegatorNameSet__Params(this);
+  }
+}
+
+export class DelegatorNameSet__Params {
+  _event: DelegatorNameSet;
+
+  constructor(event: DelegatorNameSet) {
+    this._event = event;
+  }
+
+  get delegatorId(): Bytes {
+    return this._event.parameters[0].value.toBytes();
+  }
+
+  get name(): string {
+    return this._event.parameters[1].value.toString();
+  }
+}
+
 export class MemberCreated extends ethereum.Event {
   get params(): MemberCreated__Params {
     return new MemberCreated__Params(this);
@@ -487,10 +527,6 @@ export class AddMemberDelegatorCall__Inputs {
 
   get _memberId(): Bytes {
     return this._call.inputValues[0].value.toBytes();
-  }
-
-  get _delegatorAddr(): Address {
-    return this._call.inputValues[1].value.toAddress();
   }
 }
 

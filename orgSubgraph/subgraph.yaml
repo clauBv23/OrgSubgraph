@@ -46,3 +46,31 @@ dataSources:
         - event: AllianceCreated(uint256)
           handler: handleAllianceCreated
       file: ./src/org-manager.ts
+
+# Template
+# dataSources:
+#   - kind: ethereum/contract
+#     name: Factory
+#     # ... other source fields for the main contract ...
+templates:
+  - name: Delegator
+    kind: ethereum/contract
+    network: sepolia
+    source:
+      abi: MemberDelegator
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/delegator.ts
+      entities:
+        - Delegator
+        - Caller
+      abis:
+        - name: MemberDelegator
+          file: ./abis/MemberDelegator.json
+      eventHandlers:
+        - event: DelegatorNameSet(bytes32,string)
+          handler: handleDelegatorNameSet
+        - event: DelegatorCalled(bytes32,address)
+          handler: handleDelegatorCalled
