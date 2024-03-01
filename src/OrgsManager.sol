@@ -14,10 +14,7 @@ contract OrgsManager is IOrgsManagerEvents, Organization, Member, Alliance {
     error PermissionDenied(address caller);
     error NonExistentParticipant(bytes32 participantId);
 
-    function joinOrganization(
-        bytes32 _orgId,
-        bytes32 _memberId
-    )
+    function joinOrganization(bytes32 _orgId, bytes32 _memberId)
         external
         existentOrganization(_orgId)
         existentMember(_memberId)
@@ -26,10 +23,7 @@ contract OrgsManager is IOrgsManagerEvents, Organization, Member, Alliance {
         emit MemberJoinedOrganization(_orgId, _memberId);
     }
 
-    function leaveOrganization(
-        bytes32 _orgId,
-        bytes32 _memberId
-    )
+    function leaveOrganization(bytes32 _orgId, bytes32 _memberId)
         external
         existentOrganization(_orgId)
         existentMember(_memberId)
@@ -38,11 +32,7 @@ contract OrgsManager is IOrgsManagerEvents, Organization, Member, Alliance {
         emit MemberLeavedOrganization(_orgId, _memberId);
     }
 
-    function setVotingPowerToMember(
-        bytes32 _orgId,
-        bytes32 _memberId,
-        uint256 _votingPower
-    )
+    function setVotingPowerToMember(bytes32 _orgId, bytes32 _memberId, uint256 _votingPower)
         external
         existentOrganization(_orgId)
         existentMember(_memberId)
@@ -51,33 +41,24 @@ contract OrgsManager is IOrgsManagerEvents, Organization, Member, Alliance {
         emit VotingPowerSetToMember(_orgId, _memberId, _votingPower);
     }
 
-    function joinAlliance(
-        uint256 _allianceNumber,
-        bytes32 _participantId
-    ) external existentAlliance(_allianceNumber) {
-        if (
-            !organizationExists(_participantId) && !memberExists(_participantId)
-        ) {
+    function joinAlliance(uint256 _allianceNumber, bytes32 _participantId) external existentAlliance(_allianceNumber) {
+        if (!organizationExists(_participantId) && !memberExists(_participantId)) {
             revert NonExistentParticipant(_participantId);
         }
         emit ParticipantJoinedAlliance(_allianceNumber, _participantId);
     }
 
-    function leaveAlliance(
-        uint256 _allianceNumber,
-        bytes32 _participantId
-    ) external existentAlliance(_allianceNumber) {
-        if (
-            !organizationExists(_participantId) && !memberExists(_participantId)
-        ) {
+    function leaveAlliance(uint256 _allianceNumber, bytes32 _participantId)
+        external
+        existentAlliance(_allianceNumber)
+    {
+        if (!organizationExists(_participantId) && !memberExists(_participantId)) {
             revert NonExistentParticipant(_participantId);
         }
         emit ParticipantLeavedAlliance(_allianceNumber, _participantId);
     }
 
-    function addMemberDelegator(
-        bytes32 _memberId
-    ) external existentMember(_memberId) onlyMemberAdmin(_memberId) {
+    function addMemberDelegator(bytes32 _memberId) external existentMember(_memberId) onlyMemberAdmin(_memberId) {
         _addDelegatorToMember(_memberId);
     }
 

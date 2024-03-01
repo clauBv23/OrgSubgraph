@@ -5,8 +5,7 @@ import {OrganizationData} from "./Structs.sol";
 import {IOrgsManagerEvents} from "./interfaces/IOrgsManagerEvents.sol";
 
 contract Organization is IOrgsManagerEvents {
-    mapping(bytes32 orgId => OrganizationData organization)
-        public organizations;
+    mapping(bytes32 orgId => OrganizationData organization) public organizations;
 
     function createOrganization(bytes32 _id, string calldata _name) external {
         organizations[_id] = OrganizationData(_id, _name, msg.sender);

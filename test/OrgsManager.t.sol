@@ -49,12 +49,7 @@ contract OrgsManagerTest is IOrgsManagerEvents, Test {
         manager.createMember(bytes32(memberId), "Test Member");
 
         MemberData memory member;
-        (
-            member.id,
-            member.name,
-            member.adminAddr,
-            member.delegatorAddr
-        ) = manager.members(bytes32(memberId));
+        (member.id, member.name, member.adminAddr, member.delegatorAddr) = manager.members(bytes32(memberId));
         assertEq(member.id, bytes32(memberId));
     }
 
@@ -104,17 +99,9 @@ contract OrgsManagerTest is IOrgsManagerEvents, Test {
         manager.setVotingPowerToMember(bytes32(aliceOrgId), bytes32(bobId), 10);
 
         vm.expectEmit(address(manager));
-        emit VotingPowerSetToMember(
-            bytes32(aliceOrgId),
-            bytes32(charlieId),
-            20
-        );
+        emit VotingPowerSetToMember(bytes32(aliceOrgId), bytes32(charlieId), 20);
 
-        manager.setVotingPowerToMember(
-            bytes32(aliceOrgId),
-            bytes32(charlieId),
-            20
-        );
+        manager.setVotingPowerToMember(bytes32(aliceOrgId), bytes32(charlieId), 20);
         vm.stopPrank();
     }
 
@@ -232,7 +219,7 @@ contract OrgsManagerTest is IOrgsManagerEvents, Test {
         vm.stopPrank();
 
         // check the delegator contracts is correct
-        (, , , address delegator) = manager.members(bytes32(bobId));
+        (,,, address delegator) = manager.members(bytes32(bobId));
         assertEq(MemberDelegator(delegator).memberId(), bytes32(bobId));
     }
 
@@ -250,7 +237,7 @@ contract OrgsManagerTest is IOrgsManagerEvents, Test {
         vm.stopPrank();
 
         // check the delegator contracts is correct
-        (, , , address delegator) = manager.members(bytes32(bobId));
+        (,,, address delegator) = manager.members(bytes32(bobId));
 
         // check event emission
         vm.expectEmit(address(delegator));
@@ -276,7 +263,7 @@ contract OrgsManagerTest is IOrgsManagerEvents, Test {
         vm.stopPrank();
 
         // check the delegator contracts is correct
-        (, , , address delegator) = manager.members(bytes32(bobId));
+        (,,, address delegator) = manager.members(bytes32(bobId));
 
         // alice call delegator
         vm.expectEmit(address(delegator));

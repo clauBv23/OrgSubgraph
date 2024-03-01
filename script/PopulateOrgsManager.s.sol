@@ -89,44 +89,20 @@ contract PopulateOrgsManager is Script {
     function _setMembersVotingPower() internal {
         // set voting power to Bob, and Charlie in Alice's org
         vm.startBroadcast(alice);
-        manager.setVotingPowerToMember(
-            bytes32(aliceOrgId),
-            bytes32(bobId),
-            200
-        );
-        manager.setVotingPowerToMember(
-            bytes32(aliceOrgId),
-            bytes32(charlieId),
-            300
-        );
+        manager.setVotingPowerToMember(bytes32(aliceOrgId), bytes32(bobId), 200);
+        manager.setVotingPowerToMember(bytes32(aliceOrgId), bytes32(charlieId), 300);
         vm.stopBroadcast();
 
         // set voting power to Alice, and Charlie in Bob's org
         vm.startBroadcast(bob);
-        manager.setVotingPowerToMember(
-            bytes32(bobOrgId),
-            bytes32(aliceId),
-            100
-        );
-        manager.setVotingPowerToMember(
-            bytes32(bobOrgId),
-            bytes32(charlieId),
-            300
-        );
+        manager.setVotingPowerToMember(bytes32(bobOrgId), bytes32(aliceId), 100);
+        manager.setVotingPowerToMember(bytes32(bobOrgId), bytes32(charlieId), 300);
         vm.stopBroadcast();
 
         // set voting power to Alice, and Bob in Charlie's org
         vm.startBroadcast(charlie);
-        manager.setVotingPowerToMember(
-            bytes32(charlieOrgId),
-            bytes32(aliceId),
-            100
-        );
-        manager.setVotingPowerToMember(
-            bytes32(charlieOrgId),
-            bytes32(bobId),
-            200
-        );
+        manager.setVotingPowerToMember(bytes32(charlieOrgId), bytes32(aliceId), 100);
+        manager.setVotingPowerToMember(bytes32(charlieOrgId), bytes32(bobId), 200);
         vm.stopBroadcast();
     }
 
@@ -186,16 +162,14 @@ contract PopulateOrgsManager is Script {
 
     function _setDelegatorNamesAndMakeCalls() internal {
         // get delegator addresses
-        (, , , address aliceDelegator) = manager.members(bytes32(aliceId));
-        (, , , address bobDelegator) = manager.members(bytes32(bobId));
-        (, , , address charlieDelegator) = manager.members(bytes32(charlieId));
+        (,,, address aliceDelegator) = manager.members(bytes32(aliceId));
+        (,,, address bobDelegator) = manager.members(bytes32(bobId));
+        (,,, address charlieDelegator) = manager.members(bytes32(charlieId));
 
         // set names to the delegator
         MemberDelegator(aliceDelegator).setDelegatorName("Alice's Delegator");
         MemberDelegator(bobDelegator).setDelegatorName("Bob's Delegator");
-        MemberDelegator(charlieDelegator).setDelegatorName(
-            "Charlie's Delegator"
-        );
+        MemberDelegator(charlieDelegator).setDelegatorName("Charlie's Delegator");
 
         // alice call bob's delegator
         vm.startBroadcast(alice);
