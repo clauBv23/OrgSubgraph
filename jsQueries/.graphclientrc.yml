@@ -1,0 +1,7 @@
+ # .graphclientrc.yml
+sources:
+  - name: OrgManager
+    handler:
+      graphql:
+        strategy: fallback #mention the mechanism
+        endpoint: https://api.studio.thegraph.com/query/66384/myfirstone/version/latest
