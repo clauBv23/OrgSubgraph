@@ -3,6 +3,7 @@ cache/
 out/
 node_modules/
 orgSubgraph/node_modules
+jsQueries/.graphclient
 
 # Ignores development broadcast logs
 !/broadcast
