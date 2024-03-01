@@ -24,7 +24,7 @@ type Delegator @entity(immutable: false) {
   lastCaller: Bytes # address
 }
 
-type Organization implements IParticipant @entity(immutable: true) {
+type Organization implements IParticipant @entity(immutable: false) {
   id: ID! # bytes32
   name: String! # string
   owner: Bytes! # address
